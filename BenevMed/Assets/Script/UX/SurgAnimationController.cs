@@ -7,6 +7,7 @@ public class SurgAnimationController : MonoBehaviour
 {
     [SerializeField] PlayableDirector TimeLineDirector;
     [SerializeField] Transform Camera;
+    [SerializeField] GameObject MessageObj;
 
     bool mIsPaused = false;
     float CamZPos, CamZOffset = .0f;
@@ -14,7 +15,7 @@ public class SurgAnimationController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        MessageObj.SetActive(false);
     }
 
     // Update is called once per frame
@@ -76,5 +77,21 @@ public class SurgAnimationController : MonoBehaviour
     {
         if(mIsPaused)
             Camera.localPosition = new Vector3( Camera.localPosition.x, Camera.localPosition.y, CamZOffset + CamZPos);
+    }
+
+    public void OnSignalSector1(int idx)
+    {
+        StartCoroutine(coShowMessageObject(idx));
+    }
+
+    IEnumerator coShowMessageObject(int idx)
+    {
+        MessageObj.SetActive(true);
+
+        Debug.Log($"Playing Message idx {idx}..");
+
+        yield return new WaitForSeconds(1.0f);
+
+        MessageObj.SetActive(false);
     }
 }

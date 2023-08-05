@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Benev.Events;
 
 public class SurgView : MonoBehaviour
 {
@@ -9,12 +10,16 @@ public class SurgView : MonoBehaviour
     [SerializeField] GameObject Scene3DUI;
     [SerializeField] GameObject Scene3DTextBoxUI;
 
+    EventsGroup Events = new EventsGroup();
+
     // Start is called before the first frame update
     void Start()
     {
         PreViewUI.SetActive(true);
         Scene3D.SetActive(false);
         Scene3DUI.SetActive(false);
+
+        Events.RegisterEvent("OnSurgSectionItemClicked", OnSurgSectionItemClicked);
     }
 
     // Update is called once per frame
@@ -36,5 +41,10 @@ public class SurgView : MonoBehaviour
         Scene3D.SetActive(false);
         Scene3DUI.SetActive(false);
         Scene3DTextBoxUI.SetActive(false);
+    }
+
+    private void OnSurgSectionItemClicked(object data)
+    {
+        On3DBtnClicked();
     }
 }

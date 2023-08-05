@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Benev.Events;
 
 public class DirectorMain : MonoBehaviour
 {
@@ -12,12 +13,16 @@ public class DirectorMain : MonoBehaviour
     [SerializeField] GameObject UIRoot2D;
     [SerializeField] GameObject UIRoot3D;
 
+    EventsGroup Events = new EventsGroup();
+
     private void Awake()
     {
         HomeView.SetActive(true);
         OptionView.SetActive(false);
         TabButtons.TurnOnTabButton(0);
         //if(MRecentLearningView.activeSelf)
+
+        Events.RegisterEvent("OnSurgItemClicked", OnSurgItemClicked);
 
     }
 
@@ -55,5 +60,10 @@ public class DirectorMain : MonoBehaviour
     {
         UIRoot2D.SetActive(true);
         UIRoot3D.SetActive(false);
+    }
+
+    private void OnSurgItemClicked(object data)
+    {
+        On3DSceneBtnClicked();
     }
 }

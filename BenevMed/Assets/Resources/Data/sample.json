@@ -1,0 +1,1451 @@
+{
+  "GameData": {
+    "Version": "1.0.0",
+    "EndpointKey": "ACoinsMatey",
+    "NumberOfPaylines": 40,
+    "SideWager": 20,
+    "EntryStage": "Entry"
+  },
+  "ExternalConfiguration": [
+    "metacore/konamimetacore",
+    "Reelset/konamireelset33333"
+  ],
+  "Models": {
+    "ModelStrategies": [
+      "KonamiPaylineModelStrategy",
+      "KonamiScatterPayModelStrategy PossibleScatterPayWin",
+      "TransformSymbolModelStrategy",
+      "FreeSpinStateModelStrategy FreeSpinState",
+      "FreeSpinStateModelStrategy ReelSpinEvents/FreeSpinsTriggeredInstant",
+      "PossiblePerReelMultiplierModelStrategy",
+      "KonamiWinMultiplePerPLWModelStrategy",
+      "KonamiWinMultipleModelStrategy",
+      "KonamiWinThresholdModelStrategy",
+      "ACoinsMateyReelSpinEventsModel ReelSpinEvents",
+      "ACoinsMateyJackpotModel ReelSpinEvents/FreeSpinsTriggeredInstant",
+      "ACoinsMateyJackpotModel PossibleFreeSpinPackage",
+      "KonamiWinThresholdModelStrategy ReelSpinEvents/PossibleCollectWin CoinWinThresholdModel",
+      "KonamiTotalWinModelStrategy ReelSpinEvents/PossibleCollectWin CoinTotalWinModel",
+      "ACoinsMateyCoinsModel"
+    ],
+    "Triggers": [
+      "FreeSpinState ReelSpinEvents/FreeSpinsTriggeredInstant",
+      "FreeSpinState FreeSpinState",
+      "CoinCollectTrigger ReelSpinEvents/PossibleCollectWin/WinThresholds"
+    ]
+  },
+  "Stages": {
+    "Entry": {
+      "InheritStages": [
+        "EntryMetaCore"
+      ],
+      "MetaData": {
+        "SoundList": {}
+      },
+      "Strategies": {
+        "Base": {
+          "Type": "BaseViewStrategy"
+        }
+      },
+      "States": {
+        "InitState": {
+          "EnterSequence": [
+            "run EntryMetaCore Init",
+            "Base SendStateTransition OnBaseGame"
+          ],
+          "Transition": {
+            "OnBaseGame": "TransitionToBaseGameState"
+          }
+        },
+        "TransitionToBaseGameState": {
+          "EnterSequence": [
+            "Base SendStageTransition BaseGame"
+          ],
+          "Transition": {}
+        }
+      }
+    },
+    "BaseGame": {
+      "InheritStages": [
+        "ReelSet",
+        "MetaCore"
+      ],
+      "MetaData": {
+        "Paylines": {
+          "Paylines": [
+            "1, 1, 1, 1, 1",
+            "0, 0, 0, 0, 0",
+            "2, 2, 2, 2, 2",
+            "0, 1, 2, 1, 0",
+            "2, 1, 0, 1, 2",
+            "1, 2, 2, 2, 1",
+            "1, 0, 0, 0, 1",
+            "2, 2, 1, 2, 2",
+            "0, 0, 1, 0, 0",
+            "1, 1, 2, 1, 1",
+            "1, 1, 0, 1, 1",
+            "0, 2, 0, 2, 0",
+            "2, 0, 2, 0, 2",
+            "0, 1, 0, 1, 0",
+            "2, 1, 2, 1, 2",
+            "1, 0, 1, 0, 1",
+            "1, 2, 1, 2, 1",
+            "0, 1, 1, 1, 0",
+            "2, 1, 1, 1, 2",
+            "0, 2, 2, 2, 0",
+            "2, 0, 0, 0, 2",
+            "2, 0, 1, 0, 2",
+            "0, 2, 1, 2, 0",
+            "1, 0, 2, 0, 1",
+            "1, 2, 0, 2, 1",
+            "0, 0, 2, 0, 0",
+            "2, 2, 0, 2, 2",
+            "0, 0, 1, 2, 2",
+            "2, 2, 1, 0, 0",
+            "1, 2, 1, 0, 1",
+            "1, 0, 1, 2, 1",
+            "0, 1, 1, 1, 2",
+            "2, 1, 1, 1, 0",
+            "0, 0, 0, 1, 2",
+            "2, 2, 2, 1, 0",
+            "0, 1, 2, 2, 2",
+            "2, 1, 0, 0, 0",
+            "1, 0, 0, 1, 2",
+            "1, 2, 2, 1, 0",
+            "1, 1, 1, 2, 1"
+          ]
+        },
+        "ReelStrips": {
+          "Strips": {
+            "Reels": [
+              "A,K,Q,J,TEN,NINE,WOMAN,SPYGLASS,COMPASS,BOTTLE,CHEST,COIN",
+              "A,K,Q,J,TEN,NINE,WOMAN,SPYGLASS,COMPASS,BOTTLE,CHEST,COIN",
+              "A,K,Q,J,TEN,NINE,WOMAN,SPYGLASS,COMPASS,BOTTLE,CHEST,COIN",
+              "A,K,Q,J,TEN,NINE,WOMAN,SPYGLASS,COMPASS,BOTTLE,CHEST,COIN",
+              "A,K,Q,J,TEN,NINE,WOMAN,SPYGLASS,COMPASS,BOTTLE,CHEST,COIN"
+            ],
+            "FreeSpins": [
+              "A,K,Q,J,TEN,NINE,WOMAN,SPYGLASS,COMPASS,BOTTLE,CHEST,COIN",
+              "A,K,Q,J,TEN,NINE,WOMAN,SPYGLASS,COMPASS,BOTTLE,CHEST,COIN",
+              "A,K,Q,J,TEN,NINE,WOMAN,SPYGLASS,COMPASS,BOTTLE,CHEST,COIN",
+              "A,K,Q,J,TEN,NINE,WOMAN,SPYGLASS,COMPASS,BOTTLE,CHEST,COIN",
+              "A,K,Q,J,TEN,NINE,WOMAN,SPYGLASS,COMPASS,BOTTLE,CHEST,COIN"
+            ]
+          }
+        },
+        "TransformSymbolName": [
+          "INNER"
+        ],
+        "SoundList": {
+          "BgmEnding": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_BgmEnding",
+            "nocache"
+          ],
+          "BgmFanfare": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_BgmFanfare",
+            "nocache"
+          ],
+          "BgmMain1": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_BgmMain1",
+            "nocache"
+          ],
+          "BgmMain2": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_BgmMain2",
+            "nocache"
+          ],
+          "BgmMain3": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_BgmMain3",
+            "nocache"
+          ],
+          "BgmWaiting": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_BgmWaiting",
+            "nocache"
+          ],
+          "ChestSymbolCoinSplash": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_ChestSymbolCoinSplash",
+            "nocache"
+          ],
+          "ChestSymbolDrop": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_ChestSymbolDrop",
+            "nocache"
+          ],
+          "ChestSymbolFlag": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_ChestSymbolFlag",
+            "nocache"
+          ],
+          "CoinShootA_light": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_CoinShootA_light",
+            "nocache"
+          ],
+          "CoinShootA_lightBass": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_CoinShootA_lightBass",
+            "nocache"
+          ],
+          "CoinShootB": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_CoinShootB",
+            "nocache"
+          ],
+          "CoinSymbolDrop": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_CoinSymbolDrop3",
+            "nocache"
+          ],
+          "Collect_Bass": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_Collect_Bass",
+            "nocache"
+          ],
+          "Collect_High": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_Collect_High",
+            "nocache"
+          ],
+          "Collect_Kick": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_Collect_Kick",
+            "nocache"
+          ],
+          "ResetFly": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_ResetFly",
+            "nocache"
+          ],
+          "ResetFly_Bass": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_ResetFly_Bass",
+            "nocache"
+          ],
+          "ResetValue": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_ResetValue",
+            "nocache"
+          ],
+          "VO_ACoinsMatey": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_VO_ACoinsMatey",
+            "nocache"
+          ],
+          "VO_Ahoy": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_VO_Ahoy",
+            "nocache"
+          ],
+          "VO_ShiverMeTimbers": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_VO_ShiverMeTimbers",
+            "nocache"
+          ],
+          "WipeOut": [
+            "_games/acoinsmatey",
+            "Audio/",
+            "ACoinsMatey_WipeOut",
+            "nocache"
+          ]
+        },
+        "PrefabsToLoad": {
+          "_games/acoinsmatey": [
+            "prefabs/Slots/MPF/MPF"
+          ],
+          "_games/commonkonami": [
+            "Prefabs/Slots/MPF/SpinButton"
+          ],
+          "main": [
+            "Lobby40/BottomHud/BottomHud_InSlot/BottomHud_InSlot"
+          ]
+        },
+        "EntryState": "PreInitState"
+      },
+      "Strategies": {
+        "ACoinsMateyCoinDisplayStrategy": {
+          "Type": "ACoinsMateyCoinDisplayStrategy",
+          "Strategies": {
+            "ReelSet": "ReelSet"
+          },
+          "MetaData": {
+            "FakeCoinAmountsPerWager": [
+              40,
+              60,
+              80,
+              120,
+              240,
+              600,
+              1400,
+              2800,
+              4000,
+              6000,
+              12000
+            ]
+          }
+        },
+        "ACoinsMateyCollectSymbolStrategy": {
+          "Type": "ACoinsMateyCollectSymbolStrategy",
+          "Strategies": {
+            "ReelSet": "ReelSet"
+          }
+        },
+        "ACoinsMateyBonusSymbolRevealStrategy": {
+          "Type": "ACoinsMateyBonusSymbolRevealStrategy",
+          "Strategies": {
+            "ReelSet": "ReelSet"
+          }
+        },
+        "ACoinsMateyFreeSpinJackpotStrategy": {
+          "Type": "ACoinsMateyFreeSpinJackpotStrategy",
+          "Tags": {
+            "FreeSpinJackpot": "Jackpot",
+            "FreeSpinResetJackpot": "ResetJackpot",
+            "TotalWinMeter": "TotalWinMeter",
+            "FreeSpinJackpotController": "FreeSpinJackpotController",
+            "FreeSpinBanner": "FreeSpinBanner"
+          },
+          "Strategies": {
+            "MessageBar": "MessageBar"
+          }
+        },
+        "ACoinsMateyCoinsStrategy": {
+          "Type": "ACoinsMateyCoinsStrategy",
+          "Strategies": {
+            "ReelSet": "ReelSet",
+            "MessageBar": "MessageBar"
+          },
+          "MetaData": {
+            "CoinTrailAnim": "Coin_TrailFX"
+          },
+          "Tags": {
+            "CoinPile": "Jackpot"
+          }
+        },
+        "ACoinsMateyFreeSpinMusicStrategy": {
+          "Type": "ACoinsMateyFreeSpinMusicStrategy",
+          "MetaData": {
+            "MusicThresholds": [
+              2,
+              20,
+              75,
+              150
+            ],
+            "MusicCues": [
+              "BgmMain1",
+              "BgmMain2",
+              "BgmMain3",
+              "BgmMain3"
+            ]
+          }
+        },
+        "FreeSpinAnimator": {
+          "Type": "AnimationControllerStrategy",
+          "Tags": {
+            "AnimationObject": "FreeSpinBanner"
+          }
+        },
+        "FreeSpinJackpotAnimator": {
+          "Type": "AnimationControllerStrategy",
+          "Tags": {
+            "AnimationObject": "FreeSpinJackpotController"
+          }
+        },
+        "FreeSpinTransitionAnimator": {
+          "Type": "AnimationControllerStrategy",
+          "Tags": {
+            "AnimationObject": "FreeSpinTransitionController"
+          }
+        },
+        "CoinAdjustDepthStrategy": {
+          "Type": "KonamiAdjustSlotSymbolDepthStrategy",
+          "MetaData": {
+            "SymbolName": "COIN",
+            "FinalDelay": 0.2,
+            "FinalZOffset": -20
+          }
+        },
+        "CoinsAdjustDepthStrategy": {
+          "Type": "KonamiAdjustSlotSymbolDepthStrategy",
+          "MetaData": {
+            "SymbolName": "COINS",
+            "FinalDelay": 0.2,
+            "FinalZOffset": -20
+          }
+        },
+        "EndAdjustDepthStrategy": {
+          "Type": "KonamiAdjustSlotSymbolDepthStrategy",
+          "MetaData": {
+            "SymbolName": "END",
+            "FinalDelay": 0.2,
+            "FinalZOffset": -20
+          }
+        },
+        "ResetAdjustDepthStrategy": {
+          "Type": "KonamiAdjustSlotSymbolDepthStrategy",
+          "MetaData": {
+            "SymbolName": "RESET",
+            "FinalDelay": 0.2,
+            "FinalZOffset": -20
+          }
+        },
+        "CollectAdjustDepthStrategy": {
+          "Type": "KonamiAdjustSlotSymbolDepthStrategy",
+          "MetaData": {
+            "SymbolName": "COLLECT",
+            "FinalDelay": 0.2,
+            "FinalZOffset": -20
+          }
+        },
+        "ChestAdjustDepthStrategy": {
+          "Type": "KonamiAdjustSlotSymbolDepthStrategy",
+          "MetaData": {
+            "SymbolName": "CHEST",
+            "FinalDelay": 0.2,
+            "FinalZOffset": -20
+          }
+        },
+        "ReelSet": {
+          "Type": "ReelSetStrategy",
+          "MetaData": {
+            "MinimumStopSpinDelay": 1,
+            "PlayReelStopSoundDelay": 0.35,
+            "IntroStartReelsDelays": [
+              0
+            ],
+            "IntroStartDelay": 0,
+            "StopSpinDelays": 0.27,
+            "ReelStopSoundNames": [
+              "ReelStop",
+              "ReelStop",
+              "ReelStop",
+              "ReelStop",
+              "ReelStop"
+            ],
+            "ReelIndexVolume": 0.3
+          },
+          "Strategies": {
+            "SlotReelStrategies": [
+              "SlotReel0",
+              "SlotReel1",
+              "SlotReel2",
+              "SlotReel3",
+              "SlotReel4"
+            ],
+            "ReelStopSoundStrategies": [
+              "BonusReelStopSoundStrategy",
+              "FSBonusReelStopSoundStrategy"
+            ],
+            "ReelLandingStrategies": [
+              "OversizedSymbols"
+            ]
+          }
+        },
+        "AdditionalReelSpinSubStrategies": {
+          "Type": "AdditionalReelSpinSubStrategiesStrategy",
+          "Strategies": {
+            "AdditionalSubStrategies": [
+              "CoinAdjustDepthStrategy",
+              "CoinsAdjustDepthStrategy",
+              "EndAdjustDepthStrategy",
+              "CollectAdjustDepthStrategy",
+              "ResetAdjustDepthStrategy",
+              "ChestAdjustDepthStrategy"
+            ]
+          }
+        },
+        "PaytableDialog": {
+          "Type": "PaytableDialogStrategy",
+          "MetaData": {
+            "BundleName": "_games/acoinsmatey",
+            "PathName": "Prefabs/Paytable/PaytableDialogACoinsMatey",
+            "HideLeftRightButtons": true,
+            "OpenDialogSoundName": "PaytableOpen",
+            "CancelDialogSoundName": "PaytableClose",
+            "SlideToPreviousPageSoundName": "PaytablePreviousPage",
+            "SlideToNextPageSoundName": "PaytableNextPage"
+          }
+        },
+        "MessageBar": {
+          "Type": "KonamiMessageBarStrategy",
+          "Tags": {
+            "MessageBarObject": "MessageBar",
+            "PaylineWinTextObject": "PaylineWinText",
+            "TotalWinTextObject": "TotalWinText"
+          },
+          "Strategies": {
+            "BetsicleAdapter": "UIControls"
+          },
+          "MetaData": {
+            "PromptText": "Play 40 lines + Xtra Reward. Press Spin to Play",
+            "MarketingMessagesText": [
+              "Play 40 lines + Xtra Reward. Press Spin to Play",
+              "Bet MAX to Win More!",
+              "COIN on 3 or more reels trigger the Feature"
+            ]
+          }
+        },
+        "ProgressiveSpinButtonFreeSpinState": {
+          "Type": "SpinButtonFreeSpinState",
+          "MetaData": {
+            "StateName": "FreeSpin",
+            "TypeText": "FREE",
+            "SpinText": "SPIN",
+            "ButtonColor": "252,43,255",
+            "ExplicitSetAmount": true,
+            "PersistentEffectPathName": "prefabs/widgets/FreeSpinButtonEffect",
+            "PersistentEffectLocalPosition": "0, 0, -15",
+            "SecondaryPersistentEffectPathName": "prefabs/Dialogs/Meta/ProgressivePlatform/Effects/progressiveSipnButtonEffect",
+            "CustomTopLineText": "FREE",
+            "CustomBottomLineText": "SPIN",
+            "ShowSpinAmountText": "false"
+          }
+        },
+        "SpinButtonFreeSpinState": {
+          "Type": "SpinButtonFreeSpinState",
+          "MetaData": {
+            "StateName": "FreeSpin",
+            "TypeText": "FREE",
+            "SpinText": "SPIN",
+            "ButtonColor": "252,43,255",
+            "ExplicitSetAmount": true,
+            "PersistentEffectPathName": "prefabs/widgets/FreeSpinButtonEffect",
+            "PersistentEffectLocalPosition": "0, 0, -15",
+            "CustomTopLineText": "FREE",
+            "CustomBottomLineText": "SPIN",
+            "ShowSpinAmountText": "false"
+          }
+        },
+        "FSBonusReelStopSoundStrategy": {
+          "Type": "ReelStopSoundStrategy",
+          "Strategies": {
+            "SoundConfigurations": [
+              "FSStopSoundConfig0",
+              "FSStopSoundConfig1",
+              "FSStopSoundConfig2",
+              "FSStopSoundConfig3",
+              "FSStopSoundConfig4"
+            ]
+          },
+          "MetaData": {
+            "SymbolNames": [
+              "COIN",
+              "COINS"
+            ]
+          }
+        },
+        "FSStopSoundConfig0": {
+          "Type": "ReelStopSoundConfiguration",
+          "MetaData": {
+            "SoundName": "CoinSymbolDrop",
+            "ValidIndices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          }
+        },
+        "FSStopSoundConfig1": {
+          "Type": "ReelStopSoundConfiguration",
+          "MetaData": {
+            "SoundName": "CoinSymbolDrop",
+            "ValidIndices": [
+              1,
+              2,
+              3,
+              4
+            ]
+          }
+        },
+        "FSStopSoundConfig2": {
+          "Type": "ReelStopSoundConfiguration",
+          "MetaData": {
+            "SoundName": "CoinSymbolDrop",
+            "ValidIndices": [
+              2,
+              3,
+              4
+            ]
+          }
+        },
+        "FSStopSoundConfig3": {
+          "Type": "ReelStopSoundConfiguration",
+          "MetaData": {
+            "SoundName": "CoinSymbolDrop",
+            "ValidIndices": [
+              3,
+              4
+            ]
+          }
+        },
+        "FSStopSoundConfig4": {
+          "Type": "ReelStopSoundConfiguration",
+          "MetaData": {
+            "SoundName": "CoinSymbolDrop",
+            "ValidIndices": [
+              4
+            ]
+          }
+        },
+        "BonusReelStopSoundStrategy": {
+          "Type": "ReelStopSoundStrategy",
+          "Strategies": {
+            "SoundConfigurations": [
+              "StopSoundConfig0",
+              "StopSoundConfig1",
+              "StopSoundConfig2",
+              "StopSoundConfig3",
+              "StopSoundConfig4"
+            ]
+          },
+          "MetaData": {
+            "SymbolNames": [
+              "COIN",
+              "COINS"
+            ]
+          }
+        },
+        "StopSoundConfig0": {
+          "Type": "ReelStopSoundConfiguration",
+          "MetaData": {
+            "SoundName": "FSBonusSymbol01",
+            "ValidIndices": [
+              0,
+              1,
+              2
+            ]
+          }
+        },
+        "StopSoundConfig1": {
+          "Type": "ReelStopSoundConfiguration",
+          "MetaData": {
+            "SoundName": "FSBonusSymbol02",
+            "ValidIndices": [
+              1,
+              2,
+              3
+            ]
+          }
+        },
+        "StopSoundConfig2": {
+          "Type": "ReelStopSoundConfiguration",
+          "MetaData": {
+            "SoundName": "FSBonusSymbol03",
+            "ValidIndices": [
+              2,
+              3,
+              4
+            ]
+          }
+        },
+        "StopSoundConfig3": {
+          "Type": "ReelStopSoundConfiguration",
+          "MetaData": {
+            "SoundName": "FSBonusSymbol04",
+            "ValidIndices": [
+              3,
+              4
+            ]
+          }
+        },
+        "StopSoundConfig4": {
+          "Type": "ReelStopSoundConfiguration",
+          "MetaData": {
+            "SoundName": "FSBonusSymbol05",
+            "ValidIndices": [
+              4
+            ]
+          }
+        },
+        "SymbolBlink": {
+          "Type": "KonamiSymbolBlink",
+          "MetaData": {
+            "SymbolNames": [
+              "SPYGLASS",
+              "COMPASS",
+              "BOTTLE",
+              "A",
+              "K",
+              "Q",
+              "J",
+              "TEN",
+              "NINE"
+            ],
+            "BlinkFadeOutDuration": 0.35,
+            "BlinkFadeOutHoldDuration": 0.1,
+            "BlinkFadeInDuration": 0.35,
+            "BlinkFadeInHoldDuration": 0.2,
+            "BlinkCount": 2
+          }
+        },
+        "ChestSymbolAnimation": {
+          "Type": "AnimateSymbolSubStrategy",
+          "MetaData": {
+            "AnimateState1": "Chest_Wild",
+            "AnimateState2": "Chest_Idle",
+            "TargetSymbol": "CHEST"
+          }
+        },
+        "WomanSymbolAnimation": {
+          "Type": "AnimateSymbolSubStrategy",
+          "MetaData": {
+            "AnimateState1": "PirateGirl_Blink",
+            "AnimateState2": "PirateGirl_Idle",
+            "TargetSymbol": "WOMAN"
+          }
+        },
+        "CoinSymbolAnimation": {
+          "Type": "AnimateLoopingSymbolSubStrategy",
+          "MetaData": {
+            "AnimateState1": "CoinSymbol_Spin",
+            "AnimateState2": "CoinSymbol_Idle",
+            "TargetSymbol": "COIN"
+          }
+        },
+        "CoinsSymbolAnimation": {
+          "Type": "AnimateLoopingSymbolSubStrategy",
+          "MetaData": {
+            "AnimateState1": "CoinSymbol_Spin",
+            "AnimateState2": "CoinSymbol_Idle",
+            "TargetSymbol": "COINS"
+          }
+        },
+        "ProgressiveOverlay": {
+          "Type": "ProgressiveOverlay",
+          "Strategies": {
+            "ProgressiveAdapter": "ProgressiveAdapter"
+          }
+        },
+        "SymbolRemaps": {
+          "Type": "SymbolRemaps"
+        },
+        "SlotSymbolConfiguration": {
+          "Type": "SlotSymbolConfiguration",
+          "Tags": {
+            "SlotSymbolTemplate": "SlotSymbolTemplate"
+          },
+          "Strategies": {
+            "CommonSubStrategies": [
+              "ItemCollectSlotSymbolSubStrategy",
+              "SymbolBlink",
+              "CoinSymbolAnimation",
+              "CoinsSymbolAnimation",
+              "WomanSymbolAnimation",
+              "ChestSymbolAnimation",
+              "ProgressiveOverlay",
+              "ItemCollectSlotSymbolSubStrategy",
+              "SymbolRemaps",
+              "ACoinsMateyCoinDisplayStrategy",
+              "ACoinsMateyCollectSymbolStrategy",
+              "ItemCollectSlotSymbolSubStrategy"
+            ]
+          },
+          "MetaData": {
+            "AdditionalSymbolNames": [
+            ]
+          }
+        },
+        "WinCycler": {
+          "Type": "K3WinCyclerStrategy",
+          "Strategies": {
+            "SubStrategies": [
+              "Paylines",
+              "WinMessage",
+              "SlotSymbolHighlight"
+            ],
+            "SlotReelStrategies": [
+              "SlotReel0",
+              "SlotReel1",
+              "SlotReel2",
+              "SlotReel3",
+              "SlotReel4"
+            ]
+          },
+          "MetaData": {
+            "WaitTime": 2.0,
+            "ShowOutcomesDelay": 2.0,
+            "HighlightSymbolsOnShowOutcomes": true,
+            "ScatterModelName": "KonamiScatterPayModelStrategy"
+          }
+        },
+        "BigHugeEpicWinItemCollectLiveEventStrategy": {
+          "Type": "BigHugeEpicWinItemCollectLiveEventStrategy",
+          "Strategies": {
+            "OutcomeSequenceStrategies": ["OutcomeSequence", "CoinCollectOutcomeSequence"]
+          },
+          "Tags": {
+            "WinDialogObject": "WinDialog"
+          }
+        },
+        "WinCelebration": {
+          "Type": "K3WinCelebrationStrategy",
+          "Tags": {
+            "WinDialogObject" : "WinDialog"
+          },
+          "Strategies": {
+            "SpinSpeedsStrategy": "SpinSpeeds"
+          },
+          "MetaData": {
+            "FireworksEffectPathName": "FX/KonamiFireworksCelebration02",
+            "MinimumMusicVolume": 0.0
+          }
+        },
+        "CoinCollectWinCelebration": {
+          "Type": "K3WinCelebrationStrategy",
+          "Tags": { 
+            "WinDialogObject" : "WinDialog"
+          },
+          "Strategies": {
+            "SpinSpeedsStrategy": "SpinSpeeds"
+          },
+          "MetaData": {
+            "WinThresholdModelName": "CoinWinThresholdModel",
+            "TotalWinModelName": "CoinTotalWinModel",
+            "FireworksEffectPathName": "FX/KonamiFireworksCelebration02"
+          }
+        },
+        "CoinCollectOutcomeSequence": {
+          "Type": "KonamiOutcomeSequenceStrategy",
+          "Strategies": {
+            "KonamiWinCelebrationStrategy": "CoinCollectWinCelebration"
+          }
+        },     
+        "Paylines": {
+          "Type": "K3PaylineStrategy",
+          "MetaData": {
+            "SymbolDimensions": [
+              "330, 262, 0",
+              "330, 262, 0",
+              "330, 262, 0",
+              "330, 262, 0",
+              "330, 262, 0"
+            ]
+          }
+        },
+        "SlotSymbolHighlight": {
+          "Type": "SlotSymbolHighlight",
+          "MetaData": {
+            "BonusSymbolName": "COIN",
+            "EvalType": "Wait"
+          }
+        },
+        "BaseGameArt": {
+          "Type": "GameObjectListStrategy",
+          "Tags": {
+            "GameObjects": [
+              "BaseGameArt"
+            ]
+          }
+        },
+        "FreeSpinBannerGameArt": {
+          "Type": "GameObjectListStrategy",
+          "Tags": {
+            "GameObjects": [
+              "FreeSpinBanner"
+            ]
+          }
+        },
+        "ShroudGameArt": {
+          "Type": "GameObjectListStrategy",
+          "Tags": {
+            "GameObjects": [
+              "Shroud"
+            ]
+          }
+        },
+        "FreeSpinArt": {
+          "Type": "GameObjectListStrategy",
+          "Tags": {
+            "GameObjects": [
+              "FreeSpinArt"
+            ]
+          }
+        },
+        "MPF": {
+          "Type": "GameObjectListStrategy",
+          "Tags": {
+            "GameObjects": [
+              "MPF"
+            ]
+          }
+        },
+        "CheatAdapter": {
+          "Type": "CheatAdapterStrategy",
+          "Strategies": {
+            "ReelSetStrategy": "ReelSet"
+          },
+          "MetaData": {
+            "CheatDefinitions": [
+              "InstantFreeSpin,WantHaveSymbols_COIN_COIN_COINS_Any_Any",
+              "NINE,WantHaveSymbols_NINE_NINE_NINE_NINE_NINE",
+              "TEN,WantHaveSymbols_TEN_TEN_TEN_TEN_TEN",
+              "J,WantHaveSymbols_J_J_J_J_J",
+              "Q,WantHaveSymbols_Q_Q_Q_Q_Q",
+              "K,WantHaveSymbols_K_K_K_K_K",
+              "A,WantHaveSymbols_A_A_A_A_A",
+              "WOMAN,WantHaveSymbols_WOMAN_WOMAN_WOMAN_WOMAN_WOMAN",
+              "CHEST,WantHaveSymbols_CHEST_CHEST_CHEST_CHEST_CHEST",
+              "COIN,WantHaveSymbols_COIN_COIN_Any_Any_Any",
+              "PAYLINECOLLECT,WantHaveSymbols_J_J_J_COIN_COLLECT",
+              "ACCUMULATECOLLECT,WantHaveSymbols_Any_COIN_Any_Any_COLLECT",
+              "COLLECT,WantHaveSymbols_Any_Any_Any_Any_COLLECT",
+              "RESET,WantHaveSymbols_Any_Any_Any_Any_RESET",
+              "RESETWITHACCUMULATE,WantHaveSymbols_COIN_Any_Any_Any_RESET",
+              "END,WantHaveSymbols_Any_Any_Any_Any_END",
+              "ENDWITHACCUMULATE,WantHaveSymbols_COIN_Any_Any_Any_END"
+            ],
+            "UseSymbolsPerReelCounts": false
+          }
+        },
+        "WritableModelUtility": {
+          "Type": "WritableModelUtilityStrategy"
+        },
+        "SpinSpeeds": {
+          "Type": "SpinSpeedsStrategy",
+          "Tags": {
+            "Betsicle": "BottomHud_InSlot"
+          },
+          "Strategies": {
+            "ReelSets": [
+              "ReelSet"
+            ]
+          }
+        }
+      },
+      "States": {
+        "PreInitState": {
+          "EnterSequence": [
+            "BaseGameArt SetActive true",
+            "FreeSpinArt SetActive false",
+            "ACoinsMateyFreeSpinJackpotStrategy Init",
+            "Base EvaluateTrigger OnFSPreInit FreeSpinState",
+            "Base SendStateTransition OnPreInitComplete"
+          ],
+          "Transition": {
+            "OnFSPreInit": "FSPreInitState",
+            "OnPreInitComplete": "InitState"
+          }
+        },
+        "FSPreInitState": {
+          "EnterSequence": [
+            "BaseGameArt SetActive false",
+            "FreeSpinArt SetActive true",
+            "ACoinsMateyFreeSpinJackpotStrategy SetResetJackpotValue",
+            "Base SendStateTransition OnFSPreInitComplete"
+          ],
+          "Transition": {
+            "OnFSPreInitComplete": "InitState"
+          }
+        },
+        "InitState": {
+          "EnterSequence": [
+            "run MetaCore Init",
+            "run ReelSet Init",
+            "CheatAdapter Init",
+            "run MetaCore SecondaryInit",
+            "MainViewAdapter UpdateMainViewHUDItems",
+            "FreeSpinJackpotAnimator Init",
+            "FreeSpinTransitionAnimator Init",
+            "FreeSpinAnimator Init",
+            "CoinCollectOutcomeSequence Init",
+            "Base InitializationComplete",
+            "run MetaCore InitComplete",
+            "BigHugeEpicWinItemCollectLiveEventStrategy Init",
+            "SpinButton Disable",
+            "ReelSet ClearIgnoredSubStrategies",
+            "ReelSet SetIgnoredSubStrategies FSBonusReelStopSoundStrategy",
+            "ACoinsMateyBonusSymbolRevealStrategy PreRevealSymbol",
+            "Base SendStateTransition OnInitComplete"
+          ],
+          "Transition": {
+            "OnInitComplete": "SelectState"
+          }
+        },
+        "SelectState": {
+          "EnterSequence": [
+            "AutoSpinEvaluation Evaluate OnAutoSpinsRemaining",
+            "Base EvaluateTrigger OnFreeSpinsRemaining FreeSpinState",
+            "Base SendStateTransition OnEnterBaseGame"
+          ],
+          "Transition": {
+            "OnAutoSpinsRemaining": "ValidateAutoSpinState",
+            "OnEnterBaseGame": "WaitForInputState",
+            "OnFreeSpinsRemaining": "RecoverFreeSpinState"
+          }
+        },
+        "WaitForInputState": {
+          "EnterSequence": [
+            "LowFundsCheck ShowLowFundsDialogIfNecessary",
+            "run MetaCore UnlockAll",
+            "Wait MetaEventPoll Poll"
+          ],
+          "Transition": {
+            "OnSpin": "ValidateSpinState",
+            "OnAutoSpin": "ValidateAutoSpinState"
+          }
+        },
+        "ValidateSpinState": {
+          "EnterSequence": [
+            "run MetaCore CleanUpWinHighlighting",
+            "run MetaCore LockAll",
+            "MainViewAdapter SpendCredits OnSpin OnWaitForInput"
+          ],
+          "Transition": {
+            "OnSpin": "RequestOutcomeState",
+            "OnWaitForInput": "WaitForInputState"
+          }
+        },
+        "ValidateAutoSpinState": {
+          "EnterSequence": [
+            "run MetaCore CleanUpWinHighlighting",
+            "run MetaCore LockAll",
+            "MainViewAdapter SpendCredits OnAutoSpin OnWaitForInput"
+          ],
+          "Transition": {
+            "OnAutoSpin": "AutoSpinRequestOutcomeState",
+            "OnWaitForInput": "WaitForInputState"
+          }
+        },
+        "RequestOutcomeState": {
+          "EnterSequence": [
+            "SpinSpeeds SetTurboSpinSpeeds",
+            "run ReelSet StartSpin",
+            "run MetaCore StartManualSpin",
+            "Base SendStateTransition OnRequestOutcomeComplete"
+          ],
+          "Transition": {
+            "OnRequestOutcomeComplete": "OutcomeReceivedState"
+          }
+        },
+        "OutcomeReceivedState": {
+          "EnterSequence": [
+            "run MetaCore UpdateBalances",
+            "run ReelSet StopSpin",
+            "run MetaCore UpdateElementsAndEvents",
+            "AnalyticsAdapter LogSpinResult",
+            "ACoinsMateyCoinsStrategy EvaluateCollectWin OnCoinCollectTrigger",
+            "Base EvaluateTrigger OnFreeSpinTrigger FreeSpinState",
+            "Base SendStateTransition OnOutcomeReceivedComplete"
+          ],
+          "Transition": {
+            "OnFreeSpinTrigger": "PlayInitialFreeSpinsTriggeredState",
+            "OnCoinCollectTrigger": "CollectCoinState",
+            "OnOutcomeReceivedComplete": "CycleOutcomesState"
+          }
+        },
+        "CollectCoinState": {
+          "EnterSequence": [
+            "SpinButton Disable",
+            "run BaseGame SetOutcomeCycleModelAndTriggerNamesToRespin",
+            "Wait Base Wait 0.5",
+            "ShroudGameArt SetActive true",
+            "SoundManagerAdapter PlaySoundEffect Collect_Bass 0.275 0.2",
+            "SoundManagerAdapter PlaySoundEffect Collect_High 0.5 0.2",
+            "SoundManagerAdapter PlaySoundEffect Collect_Kick 0.175 0.2",
+            "SoundManagerAdapter PlaySoundEffect ChestSymbolCoinSplash 0.25 0.2",
+            "ACoinsMateyCoinsStrategy CollectAnimation",
+            "Wait Base Wait 1.0",
+            "SpinButton Enable",
+            "CoinCollectOutcomeSequence Play",
+            "run MetaCore EnableSkipButton",
+            "Wait CoinCollectOutcomeSequence WaitUntilDone",
+            "ShroudGameArt SetActive false",
+            "run BaseGame ResetOutcomeCycleModelAndTriggerNames",
+            "Base EvaluateTrigger OnFreeSpinTrigger FreeSpinState",
+            "Base SendStateTransition OnOutcomeReceivedComplete"
+          ],
+          "Transition": {
+            "OnFreeSpinTrigger": "PlayInitialFreeSpinsTriggeredState",
+            "OnOutcomeReceivedComplete": "CycleOutcomesState"
+          }
+        },
+        "PlayInitialFreeSpinsTriggeredState": {
+          "EnterSequence": [
+            "Wait MainViewAdapter DrainSuppressionQueue",
+            "MessageBar HideMessage",
+            "SoundManagerAdapter SwitchMusicLoop BgmWaiting 0.55",
+            "run BaseGame PlayFreeSpinsTriggeredMessage", 
+            "run MetaCore PlayOutcomeSequence",
+            "run MetaCore EnableSkipButton",
+            "Wait OutcomeSequence WaitUntilDone",
+            "Base SendStateTransition OnWinCelebrationComplete"
+          ],
+          "Transition": {
+            "OnSkip": "TransitionToFreeSpinState",
+            "OnWinCelebrationComplete": "TransitionToFreeSpinState"
+          }
+        },
+        "CycleOutcomesState": {
+          "EnterSequence": [
+            "Wait Base Wait 0.2",        
+            "run MetaCore PlayOutcomeSequence",
+            "Base SendStateTransition OnWaitForInput"
+          ],
+          "Transition": {
+            "OnWaitForInput": "WaitForInputState"
+          }
+        },
+        "AutoSpinRequestOutcomeState": {
+          "GlobalEvents": [
+            "OnRequestOutcome"
+          ],
+          "EnterSequence": [
+            "SpinSpeeds SetAutoSpinSpeeds",
+            "run ReelSet StartSpin",
+            "run MetaCore StartAutoSpin",
+            "Base SendStateTransition OnRequestOutcomeComplete"
+          ],
+          "Transition": {
+            "OnRequestOutcomeComplete": "AutoSpinOutcomeReceivedState"
+          }
+        },
+        "AutoSpinOutcomeReceivedState": {
+          "EnterSequence": [
+            "run MetaCore UpdateBalances",
+            "run ReelSet StopSpin",
+            "run MetaCore UpdateElementsAndEvents",
+            "AnalyticsAdapter LogSpinResult",
+            "SpinSpeeds ResetSpeedToDefault",
+            "ACoinsMateyCoinsStrategy EvaluateCollectWin OnCoinCollectTrigger",
+            "Base EvaluateTrigger OnFreeSpinTrigger FreeSpinState",
+            "Base SendStateTransition OnOutcomeReceivedComplete"
+          ],
+          "Transition": {
+            "OnOutcomeReceivedComplete": "AutoSpinCycleOutcomesState",
+            "OnCoinCollectTrigger": "AutoSpinCollectCoinState",
+            "OnFreeSpinTrigger": "PlayInitialFreeSpinsTriggeredState"
+          }
+        },
+        "AutoSpinCollectCoinState": {
+          "EnterSequence": [
+            "ShroudGameArt SetActive true",
+            "SoundManagerAdapter PlaySoundEffect Collect_Bass 0.275 0.2",
+            "SoundManagerAdapter PlaySoundEffect Collect_High 0.5 0.2",
+            "SoundManagerAdapter PlaySoundEffect Collect_Kick 0.175 0.2",
+            "SoundManagerAdapter PlaySoundEffect ChestSymbolCoinSplash 0.25 0.2",
+            "ACoinsMateyCoinsStrategy CollectAnimation",
+            "Wait Base Wait 1.0",
+            "CoinCollectOutcomeSequence Play",
+            "run MetaCore EnableSkipButton",
+            "Wait CoinCollectOutcomeSequence WaitUntilDone",
+            "ShroudGameArt SetActive false",
+            "Base EvaluateTrigger OnFreeSpinTrigger FreeSpinState",
+            "Base SendStateTransition OnOutcomeReceivedComplete"
+          ],
+          "Transition": {
+            "OnFreeSpinTrigger": "PlayInitialFreeSpinsTriggeredState",
+            "OnOutcomeReceivedComplete": "AutoSpinCycleOutcomesState"
+          }
+        },
+        "AutoSpinCycleOutcomesState": {
+          "EnterSequence": [
+            "Wait Base Wait 0.45",
+            "run MetaCore PlayOutcomeSequence",
+            "run MetaCore EnableSkipButton",
+            "Wait OutcomeSequence WaitUntilDone",
+            "Base SendStateTransition OnWinCelebrationComplete"
+          ],
+          "Transition": {
+            "OnSkip": "AutoSpinSpinState",
+            "OnWinCelebrationComplete": "AutoSpinSpinState"
+          }
+        },
+        "AutoSpinSpinState": {
+          "EnterSequence": [
+            "Base EvaluateTrigger OnFreeSpinTrigger FreeSpinState",
+            "SpinButton SetSpinButtonState AutoSpin",
+            "SpinButton Spin"
+          ],
+          "Transition": {
+            "OnFreeSpinTrigger": "TransitionToFreeSpinState",
+            "OnOutcomeReceivedComplete": "ValidateAutoSpinState",
+            "OnAutoSpinComplete": "WaitForInputState"
+          }
+        },
+        "TransitionToFreeSpinState": {
+          "EnterSequence": [
+            "SpinButton Disable",
+            "Wait Base Wait 2.0", 
+            "ACoinsMateyFreeSpinJackpotStrategy ClearJackpotMeters",
+            "FreeSpinArt SetActive true",
+            "BaseGameArt SetActive false",
+            "Base SendStateTransition OnTransitionToFreeSpinStateComplete"
+          ],
+          "Transition": {
+            "OnTransitionToFreeSpinStateComplete": "FSInit"
+          }
+        },
+        "RecoverFreeSpinState": {
+          "EnterSequence": [
+            "SlotSymbolConfiguration SetIgnoredSubStrategies ProgressiveOverlay",
+            "ReelSet ChangeActiveReelStrip FreeSpins",
+            "SidebarCollection LockItems UIControls",
+            "run MetaCore InitFreeSpin",
+            "ACoinsMateyCollectSymbolStrategy SetInFreeSpin true",
+            "FreeSpinJackpotAnimator Play CoinPile_Idel",
+            "ACoinsMateyFreeSpinMusicStrategy PlayMusicWithThreshold",
+            "ReelSet ClearIgnoredSubStrategies",
+            "ReelSet SetIgnoredSubStrategies BonusReelStopSoundStrategy",
+            "Base InitializationComplete",
+            "Base SendStateTransition OnFSInitComplete"
+          ],
+          "Transition": {
+            "OnFSInitComplete": "FSRequestOutcomeState"
+          }
+        },
+        "FSInit": {
+          "EnterSequence": [
+            "SlotSymbolConfiguration SetIgnoredSubStrategies ProgressiveOverlay",
+            "ReelSet ChangeActiveReelStrip FreeSpins",
+            "SidebarCollection LockItems UIControls",
+            "run MetaCore InitFreeSpin",
+            "ACoinsMateyCollectSymbolStrategy SetInFreeSpin true",
+            "FreeSpinJackpotAnimator Play CoinPile_Idel",
+            "ShroudGameArt SetActive true",
+            "ACoinsMateyFreeSpinMusicStrategy PlayMusicWithThreshold",
+            "Wait Base Wait 2.0",
+            "SoundManagerAdapter PlaySoundEffect CoinShootA_light 0.4",
+            "SoundManagerAdapter PlaySoundEffect CoinShootA_lightBass 0.325",
+            "SoundManagerAdapter PlaySoundEffect CoinShootB 0.15",
+            "ACoinsMateyCoinsStrategy AccumulateAnimation",
+            "Wait Base Wait 1.0",
+            "ACoinsMateyFreeSpinJackpotStrategy SetResetJackpotValue",
+            "SoundManagerAdapter PlaySoundEffect ResetValue 0.3",
+            "ACoinsMateyFreeSpinJackpotStrategy AccumulateJackpot",
+            "Wait Base Wait 0.5",
+            "ShroudGameArt SetActive false",
+            "ReelSet ClearIgnoredSubStrategies",
+            "ReelSet SetIgnoredSubStrategies BonusReelStopSoundStrategy",
+            "Base InitializationComplete",
+            "Base SendStateTransition OnFSInitComplete"
+          ],
+          "Transition": {
+            "OnFSInitComplete": "FSRequestOutcomeState"
+          }
+        },
+        "FSRequestOutcomeState": {
+          "EnterSequence": [
+            "run MetaCore CleanUpWinHighlighting",
+            "ACoinsMateyBonusSymbolRevealStrategy ObscureSymbol",
+            "MainViewAdapter UpdateMainViewHUDItems",
+            "run MetaCore LockAll",
+            "SpinSpeeds SetTurboSpinSpeeds",
+            "run ReelSet StartSpin",
+            "run MetaCore StartFreeSpin",
+            "Wait NetworkAdapter FreeSpin",
+            "Base SendStateTransition OnRequestOutcomeComplete"
+          ],
+          "Transition": {
+            "OnRequestOutcomeComplete": "FSOutcomeReceivedState"
+          }
+        },
+        "FSOutcomeReceivedState": {
+          "EnterSequence": [
+            "MainViewAdapter TriggerInformOfBalancesEvent",
+            "LiveEventItemCollectStrategy CountSymbols",
+            "ACoinsMateyFreeSpinJackpotStrategy RecordSpins",
+            "run ReelSet StopSpin",
+            "run MetaCore UpdateElementsAndEvents",
+            "AnalyticsAdapter LogSpinResult FreeGame",
+            "ACoinsMateyFreeSpinJackpotStrategy EvaluateAccumulate OnFreeSpinAccumulateTrigger",
+            "Base SendStateTransition OnNonAccumulateCoins"
+          ],
+          "Transition": {
+            "OnFreeSpinAccumulateTrigger": "FSAccumulateState",
+            "OnNonAccumulateCoins": "FSFlagSymbolEvalState"
+          }
+        },
+        "FSAccumulateState": {
+          "EnterSequence": [
+            "Wait Base Wait 0.5",
+            "ShroudGameArt SetActive true",
+            "MessageBar HideMessage",
+            "SoundManagerAdapter PlaySoundEffect CoinShootA_light 0.4",
+            "SoundManagerAdapter PlaySoundEffect CoinShootA_lightBass 0.325",
+            "SoundManagerAdapter PlaySoundEffect CoinShootB 0.15",
+            "ACoinsMateyCoinsStrategy AccumulateAnimation",
+            "Wait Base Wait 0.5",
+            "ACoinsMateyFreeSpinJackpotStrategy AccumulateJackpot",
+            "FreeSpinJackpotAnimator Play CoinPile_Accumulates",
+            "Wait Base Wait 0.3",
+            "ACoinsMateyFreeSpinMusicStrategy PlayMusicWithThreshold",
+            "Base SendStateTransition OnAccumulateCoinsCompleted"
+          ],
+          "Transition": {
+            "OnAccumulateCoinsCompleted": "FSFlagSymbolEvalState"
+          }
+        },
+        "FSFlagSymbolEvalState": {
+          "EnterSequence": [
+            "Wait ACoinsMateyBonusSymbolRevealStrategy RevealBonusSymbol",
+            "ACoinsMateyFreeSpinJackpotStrategy EvaluateCollectWin OnFSCollect",
+            "ACoinsMateyFreeSpinJackpotStrategy EvaluateResetWin OnFSReset",
+            "Base SendStateTransition OnNoValidSymbols"
+          ],
+          "Transition": {
+            "OnFSCollect": "FSCollectState",
+            "OnFSReset": "FSResetState",
+            "OnNoValidSymbols": "FSCycleOutcomesState"
+          }
+        },
+        "FSCollectState": {
+          "EnterSequence": [
+            "run BaseGame SetOutcomeCycleModelAndTriggerNamesToRespin",
+            "ShroudGameArt SetActive true",
+            "ACoinsMateyCoinsStrategy CollectMessageBar",
+            "ACoinsMateyCoinsStrategy CollectAudio",
+            "FreeSpinJackpotAnimator Play CoinPile_Collect",
+            "Wait Base Wait 1.0",
+            "CoinCollectOutcomeSequence Play",
+            "run MetaCore EnableFreeSpinSkipButton",
+            "run MetaCore EnableSkipButton",
+            "Wait CoinCollectOutcomeSequence WaitUntilDone",
+            "ShroudGameArt SetActive false",
+            "run BaseGame ResetOutcomeCycleModelAndTriggerNames",
+            "FreeSpinJackpotAnimator Play CoinPile_Idel",
+            "Base SendStateTransition OnCollectComplete"
+          ],
+          "Transition": {
+            "OnCollectComplete": "FSCycleOutcomesState"
+          }
+        },
+        "FSResetState": {
+          "EnterSequence": [
+            "ShroudGameArt SetActive true",
+            "MessageBar HideMessage",
+            "FreeSpinJackpotAnimator Play CoinPile_Reset",
+            "Wait Base Wait 2.0",
+            "ACoinsMateyFreeSpinJackpotStrategy ResetJackpot",
+            "Wait Base Wait 2.0",
+            "ShroudGameArt SetActive false",
+            "ACoinsMateyFreeSpinMusicStrategy PlayMusicWithThreshold",
+            "Base SendStateTransition OnResetComplete"
+          ],
+          "Transition": {
+            "OnResetComplete": "FSCycleOutcomesState"
+          }
+        },
+        "FSCycleOutcomesState": {
+          "EnterSequence": [
+            "ShroudGameArt SetActive false",
+            "Wait Base Wait 0.45",
+            "MainViewAdapter UpdateMainViewHUDItems",
+            "run MetaCore PlayOutcomeSequence",
+            "run MetaCore EnableFreeSpinSkipButton",
+            "Wait OutcomeSequence WaitUntilDone",
+            "Base SendStateTransition OnWinCelebrationComplete"
+          ],
+          "Transition": {
+            "OnSkip": "FSSpinOrCompleteState",
+            "OnWinCelebrationComplete": "FSSpinOrCompleteState"
+          }
+        },
+        "FSSpinOrCompleteState": {
+          "EnterSequence": [
+            "SpinButton Disable",
+            "SpinButtonFreeSpinSkipState StopIncrement",
+            "SpinButton RestoreSpinButtonState",
+            "SpinButtonFreeSpinState SetAmount",
+            "ACoinsMateyFreeSpinJackpotStrategy EvaluateEndFS OnFreeSpinComplete",
+            "Base SendStateTransition OnOutcomeReceivedComplete"
+          ],
+          "Transition": {
+            "OnOutcomeReceivedComplete": "FSRequestOutcomeState",
+            "OnFreeSpinComplete": "FSTransitionOutState"
+          }
+        },
+        "FSTransitionOutState": {
+          "EnterSequence": [
+            "run MetaCore CleanUpWinHighlighting",
+            "ShroudGameArt SetActive true",
+            "MessageBar HideMessage",
+            "SoundManagerAdapter FadeMusic 0.0 1.5",
+            "Wait Base Wait 1.0",
+            "ACoinsMateyFreeSpinMusicStrategy PlayFreeSpinExitMusic",
+            "SlotSymbolConfiguration ClearIgnoredSubStrategies",
+            "ReelSet SetIgnoredSubStrategies FSBonusReelStopSoundStrategy",
+            "FreeSpinTransitionAnimator Play CoinPile_End",
+            "SoundManagerAdapter PlaySoundEffect WipeOut 0.35 2.8",
+            "Wait Base Wait 4.0",
+            "ACoinsMateyBonusSymbolRevealStrategy PreRevealSymbol",
+            "BaseGameArt SetActive true",
+            "FreeSpinArt SetActive false",
+            "ShroudGameArt SetActive false",
+            "SoundManagerAdapter StopMusic",
+            "Wait ACoinsMateyFreeSpinJackpotStrategy SetTotalWin",
+            "WritableModelUtility ClearValue FreeSpinTotalWinAmount",
+            "WritableModelUtility ClearValue TotalPayout",
+            "WritableModelUtility ClearValue FreeSpinsTotal",
+            "WritableModelUtility ClearValue FreeSpinsProcessed",
+            "ReelSet ChangeActiveReelStrip Reels",
+            "SpinButton SetSpinButtonState Spin",
+            "SpinButton SaveSpinButtonState",
+            "SidebarCollection UnlockAllItems",
+            "SidebarCollection Show",
+            "MainViewAdapter ShowMetaMeters",
+            "ACoinsMateyCollectSymbolStrategy SetInFreeSpin false",
+            "Base SendStateTransition OnTransitionFSOutComplete"
+          ],
+          "Transition": {
+            "OnTransitionFSOutComplete": "SelectState"
+          }
+        }
+      },
+      "ExternalSequences": {
+        "PlayFreeSpinsTriggeredMessage" : [
+          "Wait Base Wait 1.0",
+          "WinCycler ShowBonusHighlight",
+          "SoundManagerAdapter PlaySoundEffect FSTrigger",
+          "FreeSpinBannerGameArt SetActive true",
+          "FreeSpinAnimator Play FreeSpinBanner_Intro",
+          "Wait Base Wait 5.0",
+          "FreeSpinBannerGameArt SetActive false",
+          "Wait WinCycler HideBonusHighlight"
+        ],
+        "SetOutcomeCycleModelAndTriggerNamesToRespin" : [
+          "WinMessage SetTotalWinModelName CoinTotalWinModel",
+          "SpinButtonSkipState SetTriggerName CoinCollectTrigger",
+          "SpinButtonFreeSpinSkipState SetTriggerName CoinCollectTrigger",
+          "ProgressiveSpinButtonSkipState SetTriggerName CoinCollectTrigger",
+          "ProgressiveSpinButtonFreeSpinSkipState SetTriggerName CoinCollectTrigger"
+        ],
+        "ResetOutcomeCycleModelAndTriggerNames" : [
+          "WinMessage ResetTotalWinModelName",
+          "SpinButtonSkipState ResetTriggerName",
+          "SpinButtonFreeSpinSkipState ResetTriggerName",
+          "ProgressiveSpinButtonSkipState ResetTriggerName",
+          "ProgressiveSpinButtonFreeSpinSkipState ResetTriggerName"
+        ]
+      }
+    }
+  }
+}
