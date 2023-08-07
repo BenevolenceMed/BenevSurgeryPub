@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 using TMPro;
+using Benev.Events;
 
 public class SurgAnimationController : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class SurgAnimationController : MonoBehaviour
 
     bool mIsPaused = false;
     float CamZPos, CamZOffset = .0f;
+    bool mIsUpdating = false;
+    private Coroutine mCoUpdator = null;
 
     // Start is called before the first frame update
     void Start()
@@ -36,6 +39,7 @@ public class SurgAnimationController : MonoBehaviour
             TimeLineDirector.Play();
 
         mIsPaused = false;
+        mCoUpdator = StartCoroutine(coUpdateTimeLine());
     }
     public void OnRePlayClicked()
     {
@@ -84,8 +88,29 @@ public class SurgAnimationController : MonoBehaviour
 
         txtDescription.text = idx.ToString() + " " + txtDescription.text;
 
-        if (!BootStrap.GetInstance().userData.ExpertMode)
+        if (idx>1 && !BootStrap.GetInstance().userData.ExpertMode)
             OnPauseClicked();
+    }
+    private void OnDisable()
+    {
+        if(mCoUpdator != null)
+            StopCoroutine(mCoUpdator);
+        mCoUpdator = null;
+        mIsUpdating = false;
+    }
+
+    IEnumerator coUpdateTimeLine()
+    {
+        if (mIsUpdating) yield break;
+
+        mIsUpdating = true;
+        while(true)
+        {
+            yield return new WaitForSeconds(0.1f);
+
+            float fRate = (float)( TimeLineDirector.time / TimeLineDirector.playableGraph.GetRootPlayable(0).GetDuration() );
+            EventSystem.DispatchEvent("OnTimeLineUpdated", (object)fRate);
+        }
     }
 
     IEnumerator coShowMessageObject(int idx)

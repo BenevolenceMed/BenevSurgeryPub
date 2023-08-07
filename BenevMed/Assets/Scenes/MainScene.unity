@@ -11587,6 +11587,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   txtMode: {fileID: 505267898}
+  ProgressBar: {fileID: 1179099356}
 --- !u!4 &1380002989 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6493839097624234171, guid: 34b14191f89307b45b495a57e082a054,
