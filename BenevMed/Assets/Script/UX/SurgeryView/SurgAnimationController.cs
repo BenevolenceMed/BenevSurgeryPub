@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
+using TMPro;
 
 public class SurgAnimationController : MonoBehaviour
 {
     [SerializeField] PlayableDirector TimeLineDirector;
     [SerializeField] Transform Camera;
     [SerializeField] GameObject MessageObj;
+    [SerializeField] TMP_Text txtDescription;
 
     bool mIsPaused = false;
     float CamZPos, CamZOffset = .0f;
@@ -15,13 +17,7 @@ public class SurgAnimationController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        MessageObj.SetActive(false);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        ///MessageObj.SetActive(false);
     }
 
     void PlayTimeLine()
@@ -79,19 +75,28 @@ public class SurgAnimationController : MonoBehaviour
             Camera.localPosition = new Vector3( Camera.localPosition.x, Camera.localPosition.y, CamZOffset + CamZPos);
     }
 
-    public void OnSignalSector1(int idx)
+    public void OnSignalSector(int idx)
     {
-        StartCoroutine(coShowMessageObject(idx));
+        // StartCoroutine(coShowMessageObject(idx));
+
+        Debug.Log($"Sector Signal idx {idx}..");
+        // update message.
+
+        txtDescription.text = idx.ToString() + " " + txtDescription.text;
+
+        if (!BootStrap.GetInstance().userData.ExpertMode)
+            OnPauseClicked();
     }
 
     IEnumerator coShowMessageObject(int idx)
     {
-        MessageObj.SetActive(true);
+        yield break;
+        //MessageObj.SetActive(true);
 
-        Debug.Log($"Playing Message idx {idx}..");
+        //Debug.Log($"Playing Message idx {idx}..");
 
-        yield return new WaitForSeconds(1.0f);
+        //yield return new WaitForSeconds(1.0f);
 
-        MessageObj.SetActive(false);
+        //MessageObj.SetActive(false);
     }
 }

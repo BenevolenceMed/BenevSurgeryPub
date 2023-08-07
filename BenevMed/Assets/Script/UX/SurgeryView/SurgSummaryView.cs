@@ -28,7 +28,7 @@ public class SurgSummaryView : MonoBehaviour
         for (int k = 0; k < mSurgeDetailListInfo.SectionLists.Count; ++k)
         {
             SurgeSectionInfo sectionInfo = mSurgeDetailListInfo.SectionLists[k];
-            Debug.Log($"{sectionInfo.Name}");
+            // Debug.Log($"{sectionInfo.Name}");
 
 
             var obj = GameObject.Instantiate(PrefabListItem, rt.content.transform);
@@ -39,5 +39,11 @@ public class SurgSummaryView : MonoBehaviour
             rt.content.GetComponent<RectTransform>().sizeDelta.y + height);
 
 
+    }
+
+    public void OnModeChanged(int index)
+    {
+        Debug.Log($"Mode changed...{index}");
+        EventSystem.DispatchEvent("OnExpertModeChanged", (object)index);
     }
 }

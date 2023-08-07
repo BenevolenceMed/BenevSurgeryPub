@@ -28,6 +28,6 @@ public class SectionItemViewController : MonoBehaviour
     public void OnClick()
     {
         Debug.Log($"Section Item Button {mIndex} Clciked!");
-        EventSystem.DispatchEvent("OnSurgSectionItemClicked", null);
+        EventSystem.DispatchEvent("OnSurgSectionItemClicked", (object)"SergeName");
     }
 }

@@ -15,25 +15,22 @@ public class DirectorMain : MonoBehaviour
 
     EventsGroup Events = new EventsGroup();
 
+    BootStrap bootStrap = null;
+
     private void Awake()
     {
+        bootStrap = BootStrap.GetInstance();
+
         HomeView.SetActive(true);
         OptionView.SetActive(false);
         TabButtons.TurnOnTabButton(0);
         //if(MRecentLearningView.activeSelf)
 
         Events.RegisterEvent("OnSurgItemClicked", OnSurgItemClicked);
-
     }
 
     // Start is called before the first frame update
     void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
     {
         
     }
