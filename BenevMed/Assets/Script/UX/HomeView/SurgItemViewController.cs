@@ -28,6 +28,6 @@ public class SurgItemViewController : MonoBehaviour
     public void OnClick()
     {
         Debug.Log($"Button {mIndex} Clciked!");
-        EventSystem.DispatchEvent("OnSurgItemClicked", null);
+        EventSystem.DispatchEvent("OnSurgItemClicked", (object)mIndex);
     }
 }

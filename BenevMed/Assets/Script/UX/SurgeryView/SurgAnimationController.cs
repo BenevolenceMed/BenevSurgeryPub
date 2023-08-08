@@ -12,15 +12,44 @@ public class SurgAnimationController : MonoBehaviour
     [SerializeField] GameObject MessageObj;
     [SerializeField] TMP_Text txtDescription;
 
+    // Debug Controller.
+    [SerializeField] GameObject BtnPlay, BtnPause;
+
     bool mIsPaused = false;
     float CamZPos, CamZOffset = .0f;
     bool mIsUpdating = false;
     private Coroutine mCoUpdator = null;
+    bool mFreshStart = true;
 
     // Start is called before the first frame update
     void Start()
     {
         ///MessageObj.SetActive(false);
+        BtnPause.SetActive(false);
+    }
+
+    private void OnEnable()
+    {
+        mFreshStart = true;
+
+        TimeLineDirector.time = 0;
+        TimeLineDirector.Evaluate();
+
+        BtnPlay.SetActive(true);
+        BtnPause.SetActive(false);
+    }
+
+    private void OnDisable()
+    {
+        TimeLineDirector.time = 0;
+        TimeLineDirector.Stop();
+        TimeLineDirector.Evaluate();
+
+        if (mCoUpdator != null)
+            StopCoroutine(mCoUpdator);
+        mCoUpdator = null;
+        mIsUpdating = false;
+        mIsPaused = false;
     }
 
     void PlayTimeLine()
@@ -29,14 +58,25 @@ public class SurgAnimationController : MonoBehaviour
     }
     void PauseTimeLine()
     {
-        TimeLineDirector.playableGraph.GetRootPlayable(0).SetSpeed(0);
+        TimeLineDirector.playableGraph.GetRootPlayable(0).SetSpeed(0);        
     }
 
     public void OnPlayClicked()
     {
-        if (mIsPaused) PlayTimeLine();
+        if (mFreshStart)
+        {
+            OnRePlayClicked();
+            mFreshStart = false;
+        }
         else
-            TimeLineDirector.Play();
+        {
+            if (mIsPaused) PlayTimeLine();
+            else
+                TimeLineDirector.Play();
+
+            BtnPlay.SetActive(false);
+            BtnPause.SetActive(true);
+        }
 
         mIsPaused = false;
         mCoUpdator = StartCoroutine(coUpdateTimeLine());
@@ -48,11 +88,17 @@ public class SurgAnimationController : MonoBehaviour
         TimeLineDirector.Evaluate();
         TimeLineDirector.playableGraph.GetRootPlayable(0).SetSpeed(1);
         TimeLineDirector.Play();
+
+        BtnPlay.SetActive(false);
+        BtnPause.SetActive(true);
     }
     public void OnPauseClicked()
     {
         PauseTimeLine();
         mIsPaused = true;
+
+        BtnPlay.SetActive(true);
+        BtnPause.SetActive(false);
 
         CamZPos = Camera.localPosition.z;
         CamZOffset = .0f;
@@ -73,6 +119,29 @@ public class SurgAnimationController : MonoBehaviour
         TimeLineDirector.playableGraph.GetRootPlayable(0).SetSpeed(1);
         TimeLineDirector.Play();
     }
+    public void OnAddNote()
+    {
+        GameObject noteDialog = PopupDialogManager.GetInstance().Trigger("notedialog");
+
+        noteDialog.SetActive(true);
+        noteDialog.GetComponent<NoteDialog>().Init(-1, (NoteDialog.ReturnData data) =>
+        {
+            if (!data.ok) return;
+
+            // data update.
+            float fRate = (float)(TimeLineDirector.time / TimeLineDirector.playableAsset.duration);
+            Debug.Log($"Note Dialog closed...{fRate}, {data.content}");
+
+            NoteData noteData = new NoteData();
+            noteData.fTimeRate = fRate;
+            noteData.Content = data.content;
+            BootStrap.GetInstance().userData.AddNote(BootStrap.GetInstance().userData.CurrentLearning, noteData);
+            Debug.Log("Note Data has been added...");
+
+            // Refresh View.
+            EventSystem.DispatchEvent("OnNoteUpdated", null);
+        });
+    }
     private void LateUpdate()
     {
         if(mIsPaused)
@@ -91,13 +160,7 @@ public class SurgAnimationController : MonoBehaviour
         if (idx>1 && !BootStrap.GetInstance().userData.ExpertMode)
             OnPauseClicked();
     }
-    private void OnDisable()
-    {
-        if(mCoUpdator != null)
-            StopCoroutine(mCoUpdator);
-        mCoUpdator = null;
-        mIsUpdating = false;
-    }
+    
 
     IEnumerator coUpdateTimeLine()
     {
