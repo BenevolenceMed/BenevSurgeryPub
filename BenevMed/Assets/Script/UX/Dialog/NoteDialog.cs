@@ -9,7 +9,12 @@ public class NoteDialog : MonoBehaviour
     {
         public bool ok { get; set; }
         public bool delete { get; set; }
+        public bool jump { get; set; }
         public string content { get; set; }
+        public void Clear()
+        {
+            ok = false; delete = false;     jump = false; content = "";
+        }
     }
     [SerializeField] TMP_Text TxtContent;
     [SerializeField] GameObject ScrollView;
@@ -31,8 +36,10 @@ public class NoteDialog : MonoBehaviour
     // index : note index ( -1 : new one )
     public void Init(int index, System.Action<ReturnData> closeCallBack)
     {
+        mReturnData.Clear();
+
         // Update Mode.
-        if(index >= 0)
+        if (index >= 0)
         {
             mNoteData = BootStrap.GetInstance().userData.GetNoteByIndex(BootStrap.GetInstance().userData.CurrentLearning, index);
             TxtContent.text = mNoteData.Content;
@@ -88,7 +95,12 @@ public class NoteDialog : MonoBehaviour
 
     public void OnJumpToPosition()
     {
-
+        gameObject.SetActive(false);
+        mReturnData.ok = true;
+        mReturnData.delete = true;
+        mReturnData.jump = true;
+        if (mCloseCallback != null)
+            mCloseCallback.Invoke(mReturnData);
     }
 
     public void OnBtnOK()

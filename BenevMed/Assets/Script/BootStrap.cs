@@ -6,10 +6,23 @@ public class BootStrap
 {
     public UserDataHolder userData { get; private set; }
 
+    // Surgery Data.
+    public SurgeListInfo SurgeListInfo { get; private set; }
+    public SurgeDetailInfo SurgeDetailInfo { get; private set; }
+
     public void Init()
     {
         userData = new UserDataHolder();
         userData.Init();
+
+        string strJson = Resources.Load<TextAsset>("Data/surginfo").text;
+        SurgeListInfo = JsonUtility.FromJson<SurgeListInfo>(strJson);
+    }
+
+    public void LoadSurgeryDetailInfo(string surgName)
+    {
+        string strJson = Resources.Load<TextAsset>("Data/Details/AAA").text;
+        SurgeDetailInfo = JsonUtility.FromJson<SurgeDetailInfo>(strJson);
     }
 
 
@@ -23,5 +36,6 @@ public class BootStrap
         }
         return sInstance;
     }
+
 
 }

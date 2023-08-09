@@ -20,12 +20,14 @@ public class SurgAnimationController : MonoBehaviour
     bool mIsUpdating = false;
     private Coroutine mCoUpdator = null;
     bool mFreshStart = true;
+    EventsGroup Events = new EventsGroup();
 
     // Start is called before the first frame update
     void Start()
     {
         ///MessageObj.SetActive(false);
         BtnPause.SetActive(false);
+        Events.RegisterEvent("OnAnimationJumpTo", OnAnimationJumpTo);
     }
 
     private void OnEnable()
@@ -105,10 +107,20 @@ public class SurgAnimationController : MonoBehaviour
     }
     public void OnZoomInClicked()
     {
+        if(!mIsPaused)
+        {
+            Debug.Log("Only works at Paused Mode.");
+            return;
+        }
         CamZOffset += 1.0f;
     }
     public void OnZoomOutClicked()
     {
+        if (!mIsPaused)
+        {
+            Debug.Log("Only works at Paused Mode.");
+            return;
+        }
         CamZOffset -= 1.0f;
     }
     public void OnPlayAtMidClicked()
@@ -119,8 +131,56 @@ public class SurgAnimationController : MonoBehaviour
         TimeLineDirector.playableGraph.GetRootPlayable(0).SetSpeed(1);
         TimeLineDirector.Play();
     }
+    public void OnJumpToNextSector()
+    {
+        // find currenct sector.
+        long curFrame = Utils.TimeToFrame(TimeLineDirector.time);
+        SurgeDetailInfo detailInfo = BootStrap.GetInstance().SurgeDetailInfo;
+
+        int idxDefault = 0;
+        SurgeSectionInfo section = detailInfo.SectionLists[idxDefault];
+        for (int k = 1; k < section.SectorList.Count; ++k)
+        {
+            if(curFrame < section.SectorList[k].Frame)
+            {
+                // Jump To next Frame.
+                TimeLineDirector.time = Utils.FrameToTime(section.SectorList[k].Frame);
+                TimeLineDirector.Evaluate();
+                TimeLineDirector.playableGraph.GetRootPlayable(0).SetSpeed(1);
+                TimeLineDirector.Play();
+                mIsPaused = false;
+                mFreshStart = false;
+
+                if (mCoUpdator == null)
+                {
+                    mCoUpdator = StartCoroutine(coUpdateTimeLine());
+                }
+                break;
+            }
+        }
+    }
+    void OnAnimationJumpTo(object data)
+    {
+        float rate = (float)data;
+        TimeLineDirector.time = rate * TimeLineDirector.playableAsset.duration;
+        TimeLineDirector.Evaluate();
+        TimeLineDirector.playableGraph.GetRootPlayable(0).SetSpeed(1);
+        TimeLineDirector.Play();
+        mIsPaused = false;
+        mFreshStart = false;
+
+        if (mCoUpdator == null)
+        {
+            mCoUpdator = StartCoroutine(coUpdateTimeLine());
+        }
+    }
     public void OnAddNote()
     {
+        if (!mIsPaused)
+        {
+            Debug.Log("Only works at Paused Mode.");
+            return;
+        }
         GameObject noteDialog = PopupDialogManager.GetInstance().Trigger("notedialog");
 
         noteDialog.SetActive(true);

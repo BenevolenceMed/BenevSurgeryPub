@@ -21,13 +21,19 @@ public class SurgeListInfo
 
 
 
-
+[Serializable]
+public class SectorInfo
+{
+    public uint Frame;
+    public string Message;
+}
 
 [Serializable]
 public class SurgeSectionInfo
 {
     public string Name;
     public string Desc;
+    public List<SectorInfo> SectorList;
 }
 
 

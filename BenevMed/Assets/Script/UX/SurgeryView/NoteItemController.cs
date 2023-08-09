@@ -35,6 +35,12 @@ public class NoteItemController : MonoBehaviour
             //float fRate = (float)(TimeLineDirector.time / TimeLineDirector.playableAsset.duration);
             //Debug.Log($"Note Dialog closed...{fRate}, {data.content}");
 
+            if(data.jump)
+            {
+                EventSystem.DispatchEvent("OnAnimationJumpTo", (object)mTimeRate);
+                return;
+            }
+
             if (data.delete)
             {
                 BootStrap.GetInstance().userData.RemoveNote(BootStrap.GetInstance().userData.CurrentLearning, mTimeRate);

@@ -16,7 +16,6 @@ public class SurgSummaryView : MonoBehaviour
     [SerializeField] TMP_Text txtSurgName;
     [SerializeField] TMP_Dropdown DDMode;
 
-    SurgeDetailInfo mSurgeDetailListInfo;
     EventsGroup Events = new EventsGroup();
 
     List<GameObject> mListItems = new List<GameObject>();
@@ -40,8 +39,7 @@ public class SurgSummaryView : MonoBehaviour
 
     void Refresh(string selectedLearning)
     {
-        string strJson = Resources.Load<TextAsset>("Data/Details/AAA").text;
-        mSurgeDetailListInfo = JsonUtility.FromJson<SurgeDetailInfo>(strJson);
+        BootStrap.GetInstance().LoadSurgeryDetailInfo("AAA_BBB_Surge");
 
         txtSurgName.text = selectedLearning;// BootStrap.GetInstance().userData.CurrentLearning;
 
@@ -53,11 +51,12 @@ public class SurgSummaryView : MonoBehaviour
             GameObject.Destroy(mListItems[k]);
 
 
+        var surgeDetailListInfo = BootStrap.GetInstance().SurgeDetailInfo;
         ScrollRect rt = scrollView.GetComponent<ScrollRect>();
         float height = .0f;
-        for (int k = 0; k < mSurgeDetailListInfo.SectionLists.Count; ++k)
+        for (int k = 0; k < surgeDetailListInfo.SectionLists.Count; ++k)
         {
-            SurgeSectionInfo sectionInfo = mSurgeDetailListInfo.SectionLists[k];
+            SurgeSectionInfo sectionInfo = surgeDetailListInfo.SectionLists[k];
             // Debug.Log($"{sectionInfo.Name}");
 
 

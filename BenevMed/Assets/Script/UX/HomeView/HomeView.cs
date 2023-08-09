@@ -12,7 +12,6 @@ public class HomeView : MonoBehaviour
     [SerializeField] GameObject MRecentLearningView;
     [SerializeField] GameObject PrefabListItem;
 
-    SurgeListInfo mSurgeListInfo;
     EventsGroup Events = new EventsGroup();
 
     // Start is called before the first frame update
@@ -22,16 +21,15 @@ public class HomeView : MonoBehaviour
         if (!MRecentLearningView.activeSelf)
             scrollView.GetComponent<RectTransform>().sizeDelta = new Vector2(1000, 1800);
 
-        if (mSurgeListInfo == null)
-            LoadListInfo();
+        System.Diagnostics.Debug.Assert(BootStrap.GetInstance().SurgeListInfo != null);
 
         Events.RegisterEvent("OnSurgItemClicked", OnSurgItemClicked);
     }
 
     void LoadListInfo()
     {
-        string strJson = Resources.Load<TextAsset>("Data/surginfo").text;
-        mSurgeListInfo = JsonUtility.FromJson<SurgeListInfo>(strJson);
+        //string strJson = Resources.Load<TextAsset>("Data/surginfo").text;
+        //mSurgeListInfo = JsonUtility.FromJson<SurgeListInfo>(strJson);
     }
 
     private void OnEnable()
@@ -40,14 +38,14 @@ public class HomeView : MonoBehaviour
         if (!MRecentLearningView.activeSelf)
             scrollView.GetComponent<RectTransform>().sizeDelta = new Vector2(1000, 1800);
 
-        if (mSurgeListInfo == null)
-            LoadListInfo();
+        System.Diagnostics.Debug.Assert(BootStrap.GetInstance().SurgeListInfo != null);
+        var surgeListInfo = BootStrap.GetInstance().SurgeListInfo;
 
         ScrollRect rt = scrollView.GetComponent<ScrollRect>();
         float height = .0f;
-        for (int k = 0; k < mSurgeListInfo.SurgeryLists.Count; ++k)
+        for (int k = 0; k < surgeListInfo.SurgeryLists.Count; ++k)
         {
-            var surgInfo = mSurgeListInfo.SurgeryLists[k];
+            var surgInfo = surgeListInfo.SurgeryLists[k];
             // Debug.Log($"{surgInfo.Name}");
 
             var obj = GameObject.Instantiate(PrefabListItem, rt.content.transform);
@@ -59,10 +57,11 @@ public class HomeView : MonoBehaviour
 
     private void OnSurgItemClicked(object data)
     {
+        var surgeListInfo = BootStrap.GetInstance().SurgeListInfo;
         int index = (int)data;
-        if (index < 0 || index >= mSurgeListInfo.SurgeryLists.Count)
+        if (index < 0 || index >= surgeListInfo.SurgeryLists.Count)
             return;
-        string surgeName = mSurgeListInfo.SurgeryLists[index].Name;
+        string surgeName = surgeListInfo.SurgeryLists[index].Name;
         EventSystem.DispatchEvent("OnSurgSelected", (object)surgeName);
     }
 }
