@@ -21,7 +21,7 @@ public class UserDataHolder
 
     public void Init()
     {
-        ExpertMode = false;     // should read data from somewhere else ?
+        Load();
 
         Events.RegisterEvent("OnSurgSelected", OnSurgSelected);
         Events.RegisterEvent("OnExpertModeChanged", OnExpertModeChanged);
@@ -39,18 +39,86 @@ public class UserDataHolder
     {
         Debug.Log("Mode has been changed.");
         ExpertMode = (int)data == 1 ? true : false;
+        PlayerPrefs.SetInt("ExpertMode", ExpertMode ? 1 : 0);
     }
 
     void OnRecentLearningUpdated(object data)
     {
         Debug.Log("Last Learning Updated.. " + (string)data);
         LastRecentLearning = (string)data;
+        PlayerPrefs.SetString("LastRecentLearning", LastRecentLearning);
     }
 
+    #region Data Load / Save
+    public void Load()
+    {
+        ExpertMode = PlayerPrefs.GetInt("ExpertMode", 0) == 1 ? true : false;
+        LastRecentLearning = PlayerPrefs.GetString("LastRecentLearning", "");
+
+        LoadNoteData();
+    }
+    public void LoadNoteData()
+    {
+        DictNotes.Clear();
+
+        string keyInfo = PlayerPrefs.GetString("NoteKeyInfo", "");
+        if (keyInfo.Length == 0) return;
+
+        string[] singleKeyInfo = keyInfo.Split('/');
+        for (int k = 0; k < singleKeyInfo.Length; ++k)
+        {
+            string[] info = singleKeyInfo[k].Split(':');
+            if (info.Length != 2) continue;
+
+            int size = int.Parse(info[1]);
+            for (int q = 0; q < size; ++q)
+            {
+                string noteInfo = PlayerPrefs.GetString($"NoteData-{info[0]}-{q}", "");
+                if (noteInfo.Length == 0)
+                    continue;
+                string[] noteData = noteInfo.Split(':');
+                if (noteData.Length != 2)
+                    continue;
+
+                NoteData data = new NoteData();
+                data.fTimeRate = float.Parse(noteData[0]);
+                data.Content = noteData[1];
+                AddNote(info[0], data, false);
+            }
+        }
+    }
+
+    public void SaveNoteData()
+    {
+        string keyInfo = "";
+        foreach (string key in DictNotes.Keys)
+        {
+            if (DictNotes[key].Count == 0)
+                continue;
+
+            keyInfo += $"{key}:{DictNotes[key].Count}" + "/";
+        }
+        keyInfo = keyInfo.Remove(keyInfo.Length - 1);
+        PlayerPrefs.SetString("NoteKeyInfo", keyInfo);
 
 
+        foreach (string key in DictNotes.Keys)
+        {
+            if (DictNotes[key].Count == 0)
+                continue;
 
-    public void AddNote(string surgName, NoteData data)
+            List<NoteData> listData = DictNotes[key];
+            for (int k = 0; k < listData.Count; ++k)
+            {
+                PlayerPrefs.SetString($"NoteData-{key}-{k}", $"{listData[k].fTimeRate}:{listData[k].Content}");
+            }
+        }
+    }
+    #endregion
+
+
+    #region Note Data Handling.
+    public void AddNote(string surgName, NoteData data, bool save=true)
     {
         if (DictNotes.ContainsKey(surgName))
             DictNotes[surgName].Add(data);
@@ -60,6 +128,8 @@ public class UserDataHolder
             listNotes.Add(data);
             DictNotes.Add(surgName, listNotes);
         }
+
+        if(save)    SaveNoteData();
     }
     public bool RemoveNote(string surgName, float fRate)
     {
@@ -74,6 +144,8 @@ public class UserDataHolder
                 listNote.RemoveAt(k);
                 if (listNote.Count == 0)
                     DictNotes.Remove(surgName);
+
+                SaveNoteData();
                 return true;
             }
         }
@@ -120,6 +192,9 @@ public class UserDataHolder
 
         data.fTimeRate = newData.fTimeRate;
         data.Content = newData.Content;
+
+        SaveNoteData();
         return true;
     }
+    #endregion
 }

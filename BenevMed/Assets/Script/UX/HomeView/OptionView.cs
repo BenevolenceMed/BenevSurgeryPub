@@ -10,9 +10,8 @@ public class OptionView : MonoBehaviour
         
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnClickClearCache()
     {
-        
+        PlayerPrefs.DeleteAll();
     }
 }

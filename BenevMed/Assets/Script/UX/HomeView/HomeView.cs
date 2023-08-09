@@ -18,6 +18,7 @@ public class HomeView : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        MRecentLearningView.SetActive(BootStrap.GetInstance().userData.LastRecentLearning.Length > 0);
         if (!MRecentLearningView.activeSelf)
             scrollView.GetComponent<RectTransform>().sizeDelta = new Vector2(1000, 1800);
 
@@ -35,6 +36,10 @@ public class HomeView : MonoBehaviour
 
     private void OnEnable()
     {
+        MRecentLearningView.SetActive(BootStrap.GetInstance().userData.LastRecentLearning.Length > 0);
+        if (!MRecentLearningView.activeSelf)
+            scrollView.GetComponent<RectTransform>().sizeDelta = new Vector2(1000, 1800);
+
         if (mSurgeListInfo == null)
             LoadListInfo();
 

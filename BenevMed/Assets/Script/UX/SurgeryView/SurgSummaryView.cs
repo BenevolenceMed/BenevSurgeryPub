@@ -14,6 +14,7 @@ public class SurgSummaryView : MonoBehaviour
     [SerializeField] GameObject PrefabListItem;
     [SerializeField] CheckButton BtnMode;
     [SerializeField] TMP_Text txtSurgName;
+    [SerializeField] TMP_Dropdown DDMode;
 
     SurgeDetailInfo mSurgeDetailListInfo;
     EventsGroup Events = new EventsGroup();
@@ -44,6 +45,7 @@ public class SurgSummaryView : MonoBehaviour
 
         txtSurgName.text = selectedLearning;// BootStrap.GetInstance().userData.CurrentLearning;
 
+        DDMode.value = BootStrap.GetInstance().userData.ExpertMode ? 1 : 0;
         BtnMode.SetCheck(false);
 
         // destroy old ones first.
