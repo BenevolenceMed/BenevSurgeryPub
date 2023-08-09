@@ -22,6 +22,7 @@ public class SurgAnimationController : MonoBehaviour
     bool mFreshStart = true;
     EventsGroup Events = new EventsGroup();
 
+    #region Unity CallBacks
     // Start is called before the first frame update
     void Start()
     {
@@ -53,16 +54,14 @@ public class SurgAnimationController : MonoBehaviour
         mIsUpdating = false;
         mIsPaused = false;
     }
-
-    void PlayTimeLine()
+    private void LateUpdate()
     {
-        TimeLineDirector.playableGraph.GetRootPlayable(0).SetSpeed(1);
+        if (mIsPaused)
+            Camera.localPosition = new Vector3(Camera.localPosition.x, Camera.localPosition.y, CamZOffset + CamZPos);
     }
-    void PauseTimeLine()
-    {
-        TimeLineDirector.playableGraph.GetRootPlayable(0).SetSpeed(0);        
-    }
+    #endregion
 
+    #region Button & Event Receivers
     public void OnPlayClicked()
     {
         if (mFreshStart)
@@ -85,11 +84,7 @@ public class SurgAnimationController : MonoBehaviour
     }
     public void OnRePlayClicked()
     {
-        mIsPaused = false;
-        TimeLineDirector.time = .0f;
-        TimeLineDirector.Evaluate();
-        TimeLineDirector.playableGraph.GetRootPlayable(0).SetSpeed(1);
-        TimeLineDirector.Play();
+        TimeLinePlayAt(0);
 
         BtnPlay.SetActive(false);
         BtnPause.SetActive(true);
@@ -123,14 +118,6 @@ public class SurgAnimationController : MonoBehaviour
         }
         CamZOffset -= 1.0f;
     }
-    public void OnPlayAtMidClicked()
-    {
-        mIsPaused = false;
-        TimeLineDirector.time = TimeLineDirector.playableAsset.duration * 0.5f;
-        TimeLineDirector.Evaluate();
-        TimeLineDirector.playableGraph.GetRootPlayable(0).SetSpeed(1);
-        TimeLineDirector.Play();
-    }
     public void OnJumpToNextSector()
     {
         // find currenct sector.
@@ -144,34 +131,9 @@ public class SurgAnimationController : MonoBehaviour
             if(curFrame < section.SectorList[k].Frame)
             {
                 // Jump To next Frame.
-                TimeLineDirector.time = Utils.FrameToTime(section.SectorList[k].Frame);
-                TimeLineDirector.Evaluate();
-                TimeLineDirector.playableGraph.GetRootPlayable(0).SetSpeed(1);
-                TimeLineDirector.Play();
-                mIsPaused = false;
-                mFreshStart = false;
-
-                if (mCoUpdator == null)
-                {
-                    mCoUpdator = StartCoroutine(coUpdateTimeLine());
-                }
+                TimeLinePlayAt(Utils.FrameToTime(section.SectorList[k].Frame));
                 break;
             }
-        }
-    }
-    void OnAnimationJumpTo(object data)
-    {
-        float rate = (float)data;
-        TimeLineDirector.time = rate * TimeLineDirector.playableAsset.duration;
-        TimeLineDirector.Evaluate();
-        TimeLineDirector.playableGraph.GetRootPlayable(0).SetSpeed(1);
-        TimeLineDirector.Play();
-        mIsPaused = false;
-        mFreshStart = false;
-
-        if (mCoUpdator == null)
-        {
-            mCoUpdator = StartCoroutine(coUpdateTimeLine());
         }
     }
     public void OnAddNote()
@@ -202,40 +164,74 @@ public class SurgAnimationController : MonoBehaviour
             EventSystem.DispatchEvent("OnNoteUpdated", null);
         });
     }
-    private void LateUpdate()
+    
+    void OnAnimationJumpTo(object data)
     {
-        if(mIsPaused)
-            Camera.localPosition = new Vector3( Camera.localPosition.x, Camera.localPosition.y, CamZOffset + CamZPos);
+        float rate = (float)data;
+        TimeLinePlayAt(rate * TimeLineDirector.playableAsset.duration);
     }
 
     public void OnSignalSector(int idx)
     {
-        // StartCoroutine(coShowMessageObject(idx));
-
-        Debug.Log($"Sector Signal idx {idx}..");
+        Debug.Log($"Sector id {idx}..");
         // update message.
 
-        txtDescription.text = idx.ToString() + " " + txtDescription.text;
+        // find currenct sector.
+        SurgeDetailInfo detailInfo = BootStrap.GetInstance().SurgeDetailInfo;
 
-        if (idx>1 && !BootStrap.GetInstance().userData.ExpertMode)
+        int idxDefault = 0;
+        SurgeSectionInfo section = detailInfo.SectionLists[idxDefault];
+        --idx;
+        if (idx < 0 || idx >= section.SectorList.Count)
+            return;
+        
+        txtDescription.text = section.SectorList[idx].Message;
+
+        if (idx > 1 && !BootStrap.GetInstance().userData.ExpertMode)
             OnPauseClicked();
     }
-    
+    #endregion
 
+    #region Helper functions
+    void TimeLinePlayAt(double time, float speed=1)
+    {
+        TimeLineDirector.time = time;
+        TimeLineDirector.Evaluate();
+        TimeLineDirector.playableGraph.GetRootPlayable(0).SetSpeed(speed);
+        TimeLineDirector.Play();
+        mIsPaused = false;
+        mFreshStart = false;
+
+        if (mCoUpdator == null)
+        {
+            mCoUpdator = StartCoroutine(coUpdateTimeLine());
+        }
+    }
+    void PlayTimeLine()
+    {
+        TimeLineDirector.playableGraph.GetRootPlayable(0).SetSpeed(1);
+    }
+    void PauseTimeLine()
+    {
+        TimeLineDirector.playableGraph.GetRootPlayable(0).SetSpeed(0);
+    }
     IEnumerator coUpdateTimeLine()
     {
         if (mIsUpdating) yield break;
 
         mIsUpdating = true;
-        while(true)
+        while (true)
         {
             yield return new WaitForSeconds(0.1f);
 
-            float fRate = (float)( TimeLineDirector.time / TimeLineDirector.playableGraph.GetRootPlayable(0).GetDuration() );
+            float fRate = (float)(TimeLineDirector.time / TimeLineDirector.playableGraph.GetRootPlayable(0).GetDuration());
             EventSystem.DispatchEvent("OnTimeLineUpdated", (object)fRate);
         }
     }
+    #endregion
 
+
+    /*
     IEnumerator coShowMessageObject(int idx)
     {
         yield break;
@@ -247,4 +243,14 @@ public class SurgAnimationController : MonoBehaviour
 
         //MessageObj.SetActive(false);
     }
+
+    public void OnPlayAtMidClicked()
+    {
+        mIsPaused = false;
+        TimeLineDirector.time = TimeLineDirector.playableAsset.duration * 0.5f;
+        TimeLineDirector.Evaluate();
+        TimeLineDirector.playableGraph.GetRootPlayable(0).SetSpeed(1);
+        TimeLineDirector.Play();
+    }
+    */
 }
