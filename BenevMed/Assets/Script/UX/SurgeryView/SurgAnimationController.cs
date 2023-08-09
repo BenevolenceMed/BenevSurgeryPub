@@ -8,19 +8,26 @@ using Benev.Events;
 public class SurgAnimationController : MonoBehaviour
 {
     [SerializeField] PlayableDirector TimeLineDirector;
-    [SerializeField] Transform Camera;
     [SerializeField] GameObject MessageObj;
     [SerializeField] TMP_Text txtDescription;
+    [SerializeField] float ScreenDragRate = 0.001f;
 
     // Debug Controller.
     [SerializeField] GameObject BtnPlay, BtnPause;
+    [SerializeField] float TestingMoveSpeed = 0.5f;
 
+    Camera aniCamera;
     bool mIsPaused = false;
-    float CamZPos, CamZOffset = .0f;
+    Vector3 CamPos, CamZoomOffset = Vector3.zero;
     bool mIsUpdating = false;
     private Coroutine mCoUpdator = null;
     bool mFreshStart = true;
     EventsGroup Events = new EventsGroup();
+
+    private Vector3 Difference;
+    private bool Drag = false;
+    private Vector3 Origin;
+    Vector3 vDragOffset = Vector3.zero;
 
     #region Unity CallBacks
     // Start is called before the first frame update
@@ -40,6 +47,10 @@ public class SurgAnimationController : MonoBehaviour
 
         BtnPlay.SetActive(true);
         BtnPause.SetActive(false);
+
+        var foundObjects = FindObjectsOfType<Camera>();
+        System.Diagnostics.Debug.Assert(foundObjects.Length == 1);
+        aniCamera = foundObjects[0];
     }
 
     private void OnDisable()
@@ -54,10 +65,40 @@ public class SurgAnimationController : MonoBehaviour
         mIsUpdating = false;
         mIsPaused = false;
     }
+
     private void LateUpdate()
     {
-        if (mIsPaused)
-            Camera.localPosition = new Vector3(Camera.localPosition.x, Camera.localPosition.y, CamZOffset + CamZPos);
+        if (!mIsPaused) return;
+
+        UpdateSideMovement();
+
+        aniCamera.transform.position = CamPos + vDragOffset + CamZoomOffset;
+    }
+
+    void UpdateSideMovement()
+    { 
+        // Side Movement. (Screen Move)
+        if (Input.GetMouseButton(0))
+        {
+            if (Drag == false)
+            {
+                Drag = true;
+                Origin = Input.mousePosition;   
+            }
+            Difference = Origin - Input.mousePosition;
+        }
+        else
+        {
+            if (Drag)   CamPos += vDragOffset;
+            Drag = false;
+        }
+
+        vDragOffset = Vector3.zero;
+        if (Drag == true)
+        {
+            vDragOffset = aniCamera.transform.right * Difference.x * ScreenDragRate;
+            vDragOffset += aniCamera.transform.up * Difference.y * ScreenDragRate;
+        }
     }
     #endregion
 
@@ -97,8 +138,8 @@ public class SurgAnimationController : MonoBehaviour
         BtnPlay.SetActive(true);
         BtnPause.SetActive(false);
 
-        CamZPos = Camera.localPosition.z;
-        CamZOffset = .0f;
+        CamPos = aniCamera.transform.position;
+        CamZoomOffset = Vector3.zero;
     }
     public void OnZoomInClicked()
     {
@@ -107,7 +148,7 @@ public class SurgAnimationController : MonoBehaviour
             Debug.Log("Only works at Paused Mode.");
             return;
         }
-        CamZOffset += 1.0f;
+        CamZoomOffset += (aniCamera.transform.forward * TestingMoveSpeed);
     }
     public void OnZoomOutClicked()
     {
@@ -116,7 +157,7 @@ public class SurgAnimationController : MonoBehaviour
             Debug.Log("Only works at Paused Mode.");
             return;
         }
-        CamZOffset -= 1.0f;
+        CamZoomOffset -= (aniCamera.transform.forward * TestingMoveSpeed);
     }
     public void OnJumpToNextSector()
     {

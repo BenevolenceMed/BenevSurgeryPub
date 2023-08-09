@@ -4652,11 +4652,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TimeLineDirector: {fileID: 204957369}
-  Camera: {fileID: 963194228}
   MessageObj: {fileID: 1915844770}
   txtDescription: {fileID: 412643955}
+  ScreenDragRate: 0.0005
   BtnPlay: {fileID: 1505621099}
   BtnPause: {fileID: 154725558}
+  TestingMoveSpeed: 0.35
 --- !u!1 &216008786
 GameObject:
   m_ObjectHideFlags: 0
