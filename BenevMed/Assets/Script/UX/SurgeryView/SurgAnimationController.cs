@@ -11,23 +11,33 @@ public class SurgAnimationController : MonoBehaviour
     [SerializeField] GameObject MessageObj;
     [SerializeField] TMP_Text txtDescription;
     [SerializeField] float ScreenDragRate = 0.001f;
+    [SerializeField] float ScreenRotateRate = 0.05f;
+    [SerializeField] Transform DummyCamSimulation;  // need dummy transform, since tr for camera should be overriden by anim.
 
     // Debug Controller.
     [SerializeField] GameObject BtnPlay, BtnPause;
     [SerializeField] float TestingMoveSpeed = 0.5f;
+    [SerializeField] TMP_Dropdown ScreenControlMode;
 
-    Camera aniCamera;
+    enum eScreenControlMode { eDrag=0, eZoom, eRotate }
+
+    
     bool mIsPaused = false;
-    Vector3 CamPos, CamZoomOffset = Vector3.zero;
-    bool mIsUpdating = false;
     private Coroutine mCoUpdator = null;
     bool mFreshStart = true;
     EventsGroup Events = new EventsGroup();
 
-    private Vector3 Difference;
+    // Camera Control.
+    Camera aniCamera;
+    Vector3 vCamPos, vCamZoomOffset = Vector3.zero;
+    bool mIsUpdating = false;
+    private Vector3 vDifference;
     private bool Drag = false;
-    private Vector3 Origin;
+    private Vector3 vOrigin;
     Vector3 vDragOffset = Vector3.zero;
+    Vector3 vCamRot = Vector3.zero;
+    Vector3 vRotOffset = Vector3.zero;
+    eScreenControlMode mControlMode = eScreenControlMode.eDrag;
 
     #region Unity CallBacks
     // Start is called before the first frame update
@@ -47,6 +57,8 @@ public class SurgAnimationController : MonoBehaviour
 
         BtnPlay.SetActive(true);
         BtnPause.SetActive(false);
+        ScreenControlMode.value = 0;
+        mControlMode = eScreenControlMode.eDrag;
 
         var foundObjects = FindObjectsOfType<Camera>();
         System.Diagnostics.Debug.Assert(foundObjects.Length == 1);
@@ -66,39 +78,37 @@ public class SurgAnimationController : MonoBehaviour
         mIsPaused = false;
     }
 
+    private void Update()
+    {
+        if (mIsPaused) return;
+
+        // stay in sync for screen control.
+        DummyCamSimulation.position = aniCamera.transform.position;
+        DummyCamSimulation.localRotation = aniCamera.transform.localRotation;
+    }
+
     private void LateUpdate()
     {
         if (!mIsPaused) return;
 
-        UpdateSideMovement();
-
-        aniCamera.transform.position = CamPos + vDragOffset + CamZoomOffset;
-    }
-
-    void UpdateSideMovement()
-    { 
-        // Side Movement. (Screen Move)
-        if (Input.GetMouseButton(0))
+        switch (mControlMode)
         {
-            if (Drag == false)
-            {
-                Drag = true;
-                Origin = Input.mousePosition;   
-            }
-            Difference = Origin - Input.mousePosition;
+            case eScreenControlMode.eDrag:
+                UpdateSideMovement();
+                break;
+            case eScreenControlMode.eZoom:
+                UpdateZoom();
+                break;
+            case eScreenControlMode.eRotate:
+                UpdateRotation();
+                break;
         }
-        else
-        {
-            if (Drag)   CamPos += vDragOffset;
-            Drag = false;
-        }
+        aniCamera.transform.position = vCamPos + vDragOffset + vCamZoomOffset;
+        aniCamera.transform.localRotation = Quaternion.Euler(vCamRot + vRotOffset);
 
-        vDragOffset = Vector3.zero;
-        if (Drag == true)
-        {
-            vDragOffset = aniCamera.transform.right * Difference.x * ScreenDragRate;
-            vDragOffset += aniCamera.transform.up * Difference.y * ScreenDragRate;
-        }
+        // should be synced with the updated data during pause.
+        DummyCamSimulation.position = aniCamera.transform.position;
+        DummyCamSimulation.localRotation = aniCamera.transform.localRotation;
     }
     #endregion
 
@@ -138,27 +148,13 @@ public class SurgAnimationController : MonoBehaviour
         BtnPlay.SetActive(true);
         BtnPause.SetActive(false);
 
-        CamPos = aniCamera.transform.position;
-        CamZoomOffset = Vector3.zero;
+        vCamPos = aniCamera.transform.position;
+        vCamRot = aniCamera.transform.localRotation.eulerAngles;
+        vCamZoomOffset = Vector3.zero;
+        vDragOffset = Vector3.zero;
+        vRotOffset = Vector3.zero;
     }
-    public void OnZoomInClicked()
-    {
-        if(!mIsPaused)
-        {
-            Debug.Log("Only works at Paused Mode.");
-            return;
-        }
-        CamZoomOffset += (aniCamera.transform.forward * TestingMoveSpeed);
-    }
-    public void OnZoomOutClicked()
-    {
-        if (!mIsPaused)
-        {
-            Debug.Log("Only works at Paused Mode.");
-            return;
-        }
-        CamZoomOffset -= (aniCamera.transform.forward * TestingMoveSpeed);
-    }
+    
     public void OnJumpToNextSector()
     {
         // find currenct sector.
@@ -231,6 +227,12 @@ public class SurgAnimationController : MonoBehaviour
         if (idx > 1 && !BootStrap.GetInstance().userData.ExpertMode)
             OnPauseClicked();
     }
+
+    public void OnScreenControlModeChanged(int index)
+    {
+        Debug.Log($"Screen Mode changed! {index}");
+        mControlMode = (eScreenControlMode)index;
+    }
     #endregion
 
     #region Helper functions
@@ -269,8 +271,104 @@ public class SurgAnimationController : MonoBehaviour
             EventSystem.DispatchEvent("OnTimeLineUpdated", (object)fRate);
         }
     }
+
+    // Camera Control. - May need to optimize code.
+    void UpdateZoom()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            if (Drag == false)
+            {
+                Drag = true;
+                vOrigin = Input.mousePosition;
+            }
+            vDifference = vOrigin - Input.mousePosition;
+        }
+        else
+        {
+            if (Drag) vCamPos += vCamZoomOffset;
+            Drag = false;
+        }
+
+        vCamZoomOffset = Vector3.zero;
+        if (Drag == true)
+        {
+            // Can't use camera's forward since this should be overriden by ani on next frame.
+            vCamZoomOffset = DummyCamSimulation.forward * vDifference.y * ScreenDragRate;
+        }
+    }
+
+    void UpdateSideMovement()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            if (Drag == false)
+            {
+                Drag = true;
+                vOrigin = Input.mousePosition;
+            }
+            vDifference = vOrigin - Input.mousePosition;
+        }
+        else
+        {
+            if (Drag) vCamPos += vDragOffset;
+            Drag = false;
+        }
+
+        vDragOffset = Vector3.zero;
+        if (Drag == true)
+        {
+            // Can't use camera's forward since this should be overriden by ani on next frame.
+            vDragOffset = DummyCamSimulation.right * vDifference.x * ScreenDragRate;
+            vDragOffset += DummyCamSimulation.up * vDifference.y * ScreenDragRate;
+        }
+    }
+    void UpdateRotation()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            if (Drag == false)
+            {
+                Drag = true;
+                vOrigin = Input.mousePosition;
+            }
+            vDifference = vOrigin - Input.mousePosition;
+        }
+        else
+        {
+            if (Drag) vCamRot += vRotOffset;
+            Drag = false;
+        }
+
+        vRotOffset = Vector3.zero;
+        if (Drag == true)
+        {
+            vRotOffset = new Vector3(-vDifference.y, vDifference.x, .0f) * ScreenRotateRate;
+        }
+    }
     #endregion
 
+
+    public void OnZoomInClicked()
+    {
+        if (!mIsPaused)
+        {
+            Debug.Log("Only works at Paused Mode.");
+            return;
+        }
+        //CamZoomOffset += (aniCamera.transform.forward * TestingMoveSpeed);
+        vRotOffset += new Vector3(2, 0, 0);
+    }
+    public void OnZoomOutClicked()
+    {
+        if (!mIsPaused)
+        {
+            Debug.Log("Only works at Paused Mode.");
+            return;
+        }
+        vRotOffset += new Vector3(-2, 0, 0);
+        //CamZoomOffset -= (aniCamera.transform.forward * TestingMoveSpeed);
+    }
 
     /*
     IEnumerator coShowMessageObject(int idx)
@@ -293,5 +391,6 @@ public class SurgAnimationController : MonoBehaviour
         TimeLineDirector.playableGraph.GetRootPlayable(0).SetSpeed(1);
         TimeLineDirector.Play();
     }
+    
     */
 }
