@@ -11,8 +11,11 @@ public class SurgAnimationController : MonoBehaviour
     [SerializeField] GameObject MessageObj;
     [SerializeField] TMP_Text txtDescription;
     [SerializeField] float ScreenDragRate = 0.001f;
+    [SerializeField] float ScreenZoomRate = 0.001f;
     [SerializeField] float ScreenRotateRate = 0.05f;
+    [SerializeField] float ScreenRotateAroundDist = 10.0f;
     [SerializeField] Transform DummyCamSimulation;  // need dummy transform, since tr for camera should be overriden by anim.
+    [SerializeField] Transform RotationTarget;
 
     // Debug Controller.
     [SerializeField] GameObject BtnPlay, BtnPause;
@@ -29,14 +32,10 @@ public class SurgAnimationController : MonoBehaviour
 
     // Camera Control.
     Camera aniCamera;
-    Vector3 vCamPos, vCamZoomOffset = Vector3.zero;
     bool mIsUpdating = false;
     private Vector3 vDifference;
     private bool Drag = false;
     private Vector3 vOrigin;
-    Vector3 vDragOffset = Vector3.zero;
-    Vector3 vCamRot = Vector3.zero;
-    Vector3 vRotOffset = Vector3.zero;
     eScreenControlMode mControlMode = eScreenControlMode.eDrag;
 
     #region Unity CallBacks
@@ -91,24 +90,25 @@ public class SurgAnimationController : MonoBehaviour
     {
         if (!mIsPaused) return;
 
+        UpdateMouseDrag();
+
+        ReflectDummyTransformToAniCamera();
+
         switch (mControlMode)
         {
-            case eScreenControlMode.eDrag:
-                UpdateSideMovement();
-                break;
-            case eScreenControlMode.eZoom:
-                UpdateZoom();
-                break;
-            case eScreenControlMode.eRotate:
-                UpdateRotation();
-                break;
+        case eScreenControlMode.eDrag:
+            UpdateDrag();
+            break;
+        case eScreenControlMode.eZoom:
+            UpdateZoom();
+            break;
+        case eScreenControlMode.eRotate:
+            //UpdateRotation();
+            UpdateRotationAround();
+            break;
+        default:
+            return;
         }
-        aniCamera.transform.position = vCamPos + vDragOffset + vCamZoomOffset;
-        aniCamera.transform.localRotation = Quaternion.Euler(vCamRot + vRotOffset);
-
-        // should be synced with the updated data during pause.
-        DummyCamSimulation.position = aniCamera.transform.position;
-        DummyCamSimulation.localRotation = aniCamera.transform.localRotation;
     }
     #endregion
 
@@ -148,11 +148,7 @@ public class SurgAnimationController : MonoBehaviour
         BtnPlay.SetActive(true);
         BtnPause.SetActive(false);
 
-        vCamPos = aniCamera.transform.position;
-        vCamRot = aniCamera.transform.localRotation.eulerAngles;
-        vCamZoomOffset = Vector3.zero;
-        vDragOffset = Vector3.zero;
-        vRotOffset = Vector3.zero;
+        vDifference = Vector3.zero;
     }
     
     public void OnJumpToNextSector()
@@ -273,32 +269,40 @@ public class SurgAnimationController : MonoBehaviour
     }
 
     // Camera Control. - May need to optimize code.
+    void ReflectDummyTransformToAniCamera()
+    {
+        // aniCamera data is dirty since its animation transform data.
+        aniCamera.transform.position = DummyCamSimulation.position;
+        aniCamera.transform.rotation = DummyCamSimulation.rotation;
+    }
     void UpdateZoom()
     {
-        if (Input.GetMouseButton(0))
-        {
-            if (Drag == false)
-            {
-                Drag = true;
-                vOrigin = Input.mousePosition;
-            }
-            vDifference = vOrigin - Input.mousePosition;
-        }
-        else
-        {
-            if (Drag) vCamPos += vCamZoomOffset;
-            Drag = false;
-        }
-
-        vCamZoomOffset = Vector3.zero;
-        if (Drag == true)
-        {
-            // Can't use camera's forward since this should be overriden by ani on next frame.
-            vCamZoomOffset = DummyCamSimulation.forward * vDifference.y * ScreenDragRate;
-        }
+        DummyCamSimulation.position += DummyCamSimulation.forward * vDifference.y * ScreenZoomRate;
+        aniCamera.transform.position += DummyCamSimulation.forward * vDifference.y * ScreenZoomRate;
     }
 
-    void UpdateSideMovement()
+    void UpdateDrag()
+    {
+        DummyCamSimulation.position -= DummyCamSimulation.right * vDifference.x * ScreenDragRate;
+        DummyCamSimulation.position -= DummyCamSimulation.up * vDifference.y * ScreenDragRate;
+        aniCamera.transform.position -= DummyCamSimulation.right * vDifference.x * ScreenDragRate;
+        aniCamera.transform.position -= DummyCamSimulation.up * vDifference.y * ScreenDragRate;
+    }
+
+    void UpdateRotationAround()
+    {
+        Vector3 vTarget = RotationTarget != null ? RotationTarget.position : DummyCamSimulation.position + DummyCamSimulation.forward * ScreenRotateAroundDist;
+        Debug.DrawLine(DummyCamSimulation.position, vTarget);
+
+        aniCamera.transform.RotateAround(vTarget, Vector3.up, vDifference.x * ScreenRotateRate);
+        DummyCamSimulation.RotateAround(vTarget, Vector3.up, vDifference.x * ScreenRotateRate);
+
+        // Maybe x aswell ?
+        aniCamera.transform.RotateAround(vTarget, aniCamera.transform.right, -vDifference.y * ScreenRotateRate);
+        DummyCamSimulation.RotateAround(vTarget, aniCamera.transform.right, -vDifference.y * ScreenRotateRate);
+    }
+
+    void UpdateMouseDrag()
     {
         if (Input.GetMouseButton(0))
         {
@@ -307,44 +311,13 @@ public class SurgAnimationController : MonoBehaviour
                 Drag = true;
                 vOrigin = Input.mousePosition;
             }
-            vDifference = vOrigin - Input.mousePosition;
+            vDifference = Input.mousePosition - vOrigin;
         }
         else
-        {
-            if (Drag) vCamPos += vDragOffset;
             Drag = false;
-        }
-
-        vDragOffset = Vector3.zero;
+        
         if (Drag == true)
-        {
-            // Can't use camera's forward since this should be overriden by ani on next frame.
-            vDragOffset = DummyCamSimulation.right * vDifference.x * ScreenDragRate;
-            vDragOffset += DummyCamSimulation.up * vDifference.y * ScreenDragRate;
-        }
-    }
-    void UpdateRotation()
-    {
-        if (Input.GetMouseButton(0))
-        {
-            if (Drag == false)
-            {
-                Drag = true;
-                vOrigin = Input.mousePosition;
-            }
-            vDifference = vOrigin - Input.mousePosition;
-        }
-        else
-        {
-            if (Drag) vCamRot += vRotOffset;
-            Drag = false;
-        }
-
-        vRotOffset = Vector3.zero;
-        if (Drag == true)
-        {
-            vRotOffset = new Vector3(-vDifference.y, vDifference.x, .0f) * ScreenRotateRate;
-        }
+            vOrigin = Input.mousePosition;
     }
     #endregion
 
@@ -357,7 +330,7 @@ public class SurgAnimationController : MonoBehaviour
             return;
         }
         //CamZoomOffset += (aniCamera.transform.forward * TestingMoveSpeed);
-        vRotOffset += new Vector3(2, 0, 0);
+        //vRotOffset += new Vector3(2, 0, 0);
     }
     public void OnZoomOutClicked()
     {
@@ -366,7 +339,7 @@ public class SurgAnimationController : MonoBehaviour
             Debug.Log("Only works at Paused Mode.");
             return;
         }
-        vRotOffset += new Vector3(-2, 0, 0);
+        //vRotOffset += new Vector3(-2, 0, 0);
         //CamZoomOffset -= (aniCamera.transform.forward * TestingMoveSpeed);
     }
 
@@ -391,6 +364,28 @@ public class SurgAnimationController : MonoBehaviour
         TimeLineDirector.playableGraph.GetRootPlayable(0).SetSpeed(1);
         TimeLineDirector.Play();
     }
-    
+    void UpdateRotation()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            if (Drag == false)
+            {
+                Drag = true;
+                vOrigin = Input.mousePosition;
+            }
+            vDifference = vOrigin - Input.mousePosition;
+        }
+        else
+        {
+            if (Drag) vCamRot += vRotOffset;
+            Drag = false;
+        }
+
+        vRotOffset = Vector3.zero;
+        if (Drag == true)
+        {
+            vRotOffset = new Vector3(-vDifference.y, vDifference.x, .0f) * ScreenRotateRate;
+        }
+    }
     */
 }
