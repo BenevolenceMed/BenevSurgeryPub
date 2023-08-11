@@ -15,6 +15,7 @@ public class UserDataHolder
     public bool ExpertMode { get; set; }            // false to Beginner Mode.
     public string LastRecentLearning { get; set; }  // 
     public string CurrentLearning { get; set; }
+    public int IndexSelectedSectorInSurg { get; set; } 
     public Dictionary<string, List<NoteData>> DictNotes = new Dictionary<string, List<NoteData>>();
 
     EventsGroup Events = new EventsGroup();
@@ -44,8 +45,9 @@ public class UserDataHolder
 
     void OnRecentLearningUpdated(object data)
     {
-        Debug.Log("Last Learning Updated.. " + (string)data);
-        LastRecentLearning = (string)data;
+        Debug.Log($"Last Learning Updated..{CurrentLearning}-{(int)data}");
+        LastRecentLearning = CurrentLearning;
+        IndexSelectedSectorInSurg = (int)data;
         PlayerPrefs.SetString("LastRecentLearning", LastRecentLearning);
     }
 

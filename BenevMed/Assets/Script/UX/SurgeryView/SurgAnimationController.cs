@@ -7,7 +7,6 @@ using Benev.Events;
 
 public class SurgAnimationController : MonoBehaviour
 {
-    [SerializeField] PlayableDirector TimeLineDirector;
     [SerializeField] GameObject MessageObj;
     [SerializeField] TMP_Text txtDescription;
     [SerializeField] float ScreenDragRate = 0.001f;
@@ -15,7 +14,7 @@ public class SurgAnimationController : MonoBehaviour
     [SerializeField] float ScreenRotateRate = 0.05f;
     [SerializeField] float ScreenRotateAroundDist = 10.0f;
     [SerializeField] Transform DummyCamSimulation;  // need dummy transform, since tr for camera should be overriden by anim.
-    [SerializeField] Transform RotationTarget;
+    
 
     // Debug Controller.
     [SerializeField] GameObject BtnPlay, BtnPause;
@@ -24,7 +23,8 @@ public class SurgAnimationController : MonoBehaviour
 
     enum eScreenControlMode { eDrag=0, eZoom, eRotate }
 
-    
+
+    PlayableDirector TimeLineDirector;
     bool mIsPaused = false;
     private Coroutine mCoUpdator = null;
     bool mFreshStart = true;
@@ -37,6 +37,7 @@ public class SurgAnimationController : MonoBehaviour
     private bool Drag = false;
     private Vector3 vOrigin;
     eScreenControlMode mControlMode = eScreenControlMode.eDrag;
+    Transform RotationTarget;
 
     #region Unity CallBacks
     // Start is called before the first frame update
@@ -45,11 +46,20 @@ public class SurgAnimationController : MonoBehaviour
         ///MessageObj.SetActive(false);
         BtnPause.SetActive(false);
         Events.RegisterEvent("OnAnimationJumpTo", OnAnimationJumpTo);
+        Events.RegisterEvent("OnSectionStarted", OnSectionStarted);
     }
 
     private void OnEnable()
     {
         mFreshStart = true;
+
+        // Load Prefab.
+        string strPref = BootStrap.GetInstance().userData.IndexSelectedSectorInSurg==0 ?
+                            "001_AnkleSurgery/main" : "002_HandSurgery/main";
+        GameObject surgPref = Resources.Load<GameObject>("Bundles/" + strPref);
+        TimeLineDirector = GameObject.Instantiate(surgPref, transform).GetComponent<PlayableDirector>();
+        var rt = TimeLineDirector.transform.GetComponentInChildren<RotateTarget>();
+        RotationTarget = rt.transform;
 
         TimeLineDirector.time = 0;
         TimeLineDirector.Evaluate();
@@ -66,9 +76,11 @@ public class SurgAnimationController : MonoBehaviour
 
     private void OnDisable()
     {
-        TimeLineDirector.time = 0;
-        TimeLineDirector.Stop();
-        TimeLineDirector.Evaluate();
+        //TimeLineDirector.time = 0;
+        //TimeLineDirector.Stop();
+        //TimeLineDirector.Evaluate();
+
+        GameObject.Destroy(TimeLineDirector.gameObject);
 
         if (mCoUpdator != null)
             StopCoroutine(mCoUpdator);
@@ -203,9 +215,9 @@ public class SurgAnimationController : MonoBehaviour
         float rate = (float)data;
         TimeLinePlayAt(rate * TimeLineDirector.playableAsset.duration);
     }
-
-    public void OnSignalSector(int idx)
+    void OnSectionStarted(object data)
     {
+        int idx = (int)data;
         Debug.Log($"Sector id {idx}..");
         // update message.
 
